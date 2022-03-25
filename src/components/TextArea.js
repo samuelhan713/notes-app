@@ -1,6 +1,9 @@
 import './Main.css';
+import React from "react";
+import { WithContext as ReactTags } from "react-tag-input";
 
-function TextArea({handleDelete, activeNote, onEdit}) {
+function TextArea({handleNoteDelete, activeNote, onEdit}) {
+    const [tags, setTags] = React.useState([]);
     
     const onType = (field, value) => {
         onEdit(
@@ -12,10 +15,39 @@ function TextArea({handleDelete, activeNote, onEdit}) {
         )
     }
 
-    const onDelete = () => {
-        handleDelete(activeNote);
+    const onNoteDelete = () => {
+        handleNoteDelete(activeNote);
     }
-        
+
+
+
+    const handleDelete = (i) => {
+        console.log("A tag was deleted!");
+        activeNote.noteTags.splice(i, 1);
+    }
+
+    const handleAddition = (tag) => {
+        activeNote.noteTags.push(tag);
+    }
+
+    const handleDrag = (tag, currPos, newPos) => {//????
+        /* const newTags = activeNote.noteTags.slice(); */
+        activeNote.noteTags.splice(currPos, 1);
+        activeNote.noteTags.splice(newPos, 0, tag);
+
+        activeNote.noteTags = [...activeNote.noteTags];
+        /* setTags(newTags); */
+    }
+
+    const handleTagClick = (index) => {
+        console.log("The tag at index " + index + "was clicked!");
+    }
+
+    const KeyCodes = {
+        enter: 13
+    };
+
+    const delimiters = [KeyCodes.enter];
 
     if (!activeNote) {
         return (
@@ -23,7 +55,7 @@ function TextArea({handleDelete, activeNote, onEdit}) {
                 <span className="material-icons">arrow_back</span>
                 <span className="material-icons">notification_add</span>
                 <span className="material-icons">person_add_alt</span>
-                <span className="material-icons" onClick={handleDelete}>delete</span>
+                <span className="material-icons" onClick={onNoteDelete}>delete</span>
             </div>
         )
     }
@@ -33,10 +65,26 @@ function TextArea({handleDelete, activeNote, onEdit}) {
                 <span className="material-icons">arrow_back</span>
                 <span className="material-icons">notification_add</span>
                 <span className="material-icons">person_add_alt</span>
-                <span className="material-icons" onClick={onDelete}>delete</span>
+                <span className="material-icons" onClick={onNoteDelete}>delete</span>
             </div>
             <div className="main-textarea">
                 <textarea value={activeNote.text} onChange={(e) => onType("text", e.target.value)}/>
+            </div>
+            <div className="text-main-footer">
+                <div className="tags">
+                    <ReactTags
+                        tags={activeNote.noteTags}
+                        delimiters={delimiters}
+                        handleDelete={handleDelete}
+                        handleAddition={handleAddition}
+                        handleDrag={handleDrag}
+                        handleTagClick={handleTagClick}
+                        inputFieldPosition="inline"
+                        placeholder="Enter a tag"
+                        autocomplete
+                        autofocus={false}
+                    />
+                </div>
             </div>
         </div>
     )

@@ -30,3 +30,5 @@ function Sidebar({notes, onAddNote, active, setActive}) { //instead of props.not
 }
 
 export default Sidebar;
+
+//pass the id for each note as the key when mapping over things

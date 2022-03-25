@@ -10,6 +10,10 @@
   --border-color: darkgray;
 }
 
+body {
+  overflow: hidden;
+}
+
 .App {
   display: flex;
 }
@@ -100,7 +104,7 @@ img {
 textArea {
   border: none;
   width: 99%;
-  height: 650px;
+  height: 550px;
   resize: none;
 }
 
@@ -186,7 +190,7 @@ input[type="text"] {
 
 select[name="colorTheme"] {
   width: 98%;
-  height: 30px;
+  height: 25px;
 }
 
 .savebtn {
@@ -207,6 +211,60 @@ select[name="colorTheme"] {
   margin: 10px 0 0 40px;
 }
 
+.text-main-footer {
+  background-color: rgb(237, 237, 237);
+  bottom: 0;
+  position: absolute;
+  width: 84%;
+  display: flex;
+  bottom: 0;
+}
+
+.ReactTags__tags {
+  position: relative;
+}
+.ReactTags__tagInput {
+  border-radius: 2px;
+  display: inline-block;
+}
+.ReactTags__tagInput input.ReactTags__tagInputField,
+.ReactTags__tagInput input.ReactTags__tagInputField:focus {
+  height: 31px;
+  margin: 0;
+  font-size: 12px;
+  border: 1px solid #eee;
+  min-width: 150px;
+  margin: 5px;
+}
+.ReactTags__editInput {
+  border-radius: 1px;
+}
+
+.ReactTags__editTagInput {
+  display: inline-flex;
+}
+.ReactTags__selected span.ReactTags__tag {
+  border: 1px solid rgb(192, 191, 191);
+  /* background: #63bcfd; */
+  font-size: 12px;
+  display: inline-block;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 2px;
+}
+.ReactTags__selected span.ReactTags__tag:first-child {
+  margin-left: 0px;
+}
+.ReactTags__selected a.ReactTags__remove {
+  color: #aaa;
+  margin-left: 5px;
+  cursor: pointer;
+}
+.ReactTags__remove {
+  cursor: pointer;
+  margin-left: 3px;
+}
+
 @media all and (max-width: 500px) {
   .sidebar {
     display: none;
@@ -217,6 +275,10 @@ select[name="colorTheme"] {
     height: 100%;
     border-radius: 0%;
     padding: 40px;
+  }
+
+  .text-main-footer {
+    width: 100%;
   }
 
   #arr {
