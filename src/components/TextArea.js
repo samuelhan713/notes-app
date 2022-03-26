@@ -1,16 +1,22 @@
 import './Main.css';
 import React from "react";
 import { WithContext as ReactTags } from "react-tag-input";
+import useWindowDimensions from '../windowResize';
+import { useState } from 'react';
 
-function TextArea({handleNoteDelete, activeNote, onEdit}) {
-    const [tags, setTags] = React.useState([]);
+
+
+function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleSwitch}) {
+    const { height, width } = useWindowDimensions();
+    const d = new Date();
+
     
     const onType = (field, value) => {
         onEdit(
             {
                 ...activeNote,
                 [field]:value,
-                date: Date.now()
+                date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
             }
         )
     }
@@ -18,8 +24,6 @@ function TextArea({handleNoteDelete, activeNote, onEdit}) {
     const onNoteDelete = () => {
         handleNoteDelete(activeNote);
     }
-
-
 
     const handleDelete = (i) => {
         console.log("A tag was deleted!");
@@ -51,24 +55,27 @@ function TextArea({handleNoteDelete, activeNote, onEdit}) {
 
     if (!activeNote) {
         return (
-            <div className="text-main-header">
-                <span className="material-icons">arrow_back</span>
-                <span className="material-icons">notification_add</span>
-                <span className="material-icons">person_add_alt</span>
-                <span className="material-icons" onClick={onNoteDelete}>delete</span>
+            <div className={`text-main ${textAreaActive ? "activeComponent" : "false"}`}>
+                <div className="text-main-header">
+                    <span className="material-icons" onClick={handleSwitch}>arrow_back</span>
+                    <span className="material-icons">notification_add</span>
+                    <span className="material-icons">person_add_alt</span>
+                    <span className="material-icons" onClick={onNoteDelete}>delete</span>
+                </div> 
             </div>
         )
     }
     return (
-        <div className="text-main">
+        <div className={`text-main ${textAreaActive ? "activeComponent" : "false"}`}>
             <div className="text-main-header">
-                <span className="material-icons">arrow_back</span>
+                <span className="material-icons" onClick={handleSwitch}>arrow_back</span>
                 <span className="material-icons">notification_add</span>
                 <span className="material-icons">person_add_alt</span>
                 <span className="material-icons" onClick={onNoteDelete}>delete</span>
             </div>
             <div className="main-textarea">
                 <textarea value={activeNote.text} onChange={(e) => onType("text", e.target.value)}/>
+                <div>width: {width} ~ height: {height}</div>
             </div>
             <div className="text-main-footer">
                 <div className="tags">
@@ -91,3 +98,4 @@ function TextArea({handleNoteDelete, activeNote, onEdit}) {
 }
 
 export default TextArea;
+

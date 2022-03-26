@@ -1,11 +1,12 @@
 import './Main.css';
-function Sidebar({notes, onAddNote, active, setActive}) { //instead of props.notes, you can just use notes
+import useWindowDimensions from '../windowResize';
+function Sidebar({notes, onAddNote, active, setActive, sidebarActive, handleSwitch}) { //instead of props.notes, you can just use notes
+    const { width, height } = useWindowDimensions();
+
     return (
-        <div className="sidebar">
-            <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet"></link>
+        <div className={`sidebar ${sidebarActive ? "activeComponent" : "false"}`}>
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
             <div className="sidebar-header">
-                {/* <input type="checkbox" id="open-modal"/> */}
                 <label htmlFor="modal"><img src="https://yt3.ggpht.com/IpUd8bbQ8AFVis-r0ypfvHvB1t8KTJWLOsbBxWbYNH24e_WIwYNwURqa009GWBy56zCrn52dqAc=s900-c-k-c0x00ffffff-no-rj"/></label>
                 <div>My Notes</div>
                 <span className="material-icons" id="note_add" onClick={onAddNote}>note_add</span>
@@ -15,9 +16,8 @@ function Sidebar({notes, onAddNote, active, setActive}) { //instead of props.not
                 <span id="searchText">Search all notes</span>
             </div>
             <div className="sidebar-notes">
-                {notes.map((note) => ( //will map over each note in the array
-                    <div className={`sidebar-note ${note.id === active && "active"}`} onClick={() => setActive(note.id)}>
-                        {/* line 19: if note.id === active, then set "active" */}
+                {notes.map((note) => ( 
+                    <div className={`sidebar-note ${note.id === active && "active"}`} onClick={() => {setActive(note.id); (width <= 500 && handleSwitch());}}>
                         <div className="note-title">
                             <h5>{note.text.length !== 0 ? note.text : "New Note"}</h5>
                         </div>

@@ -2,24 +2,27 @@ import './App.css';
 import TextArea from './components/TextArea';
 import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
-import Tags from './components/Tags';
+/* import Tags from './components/Tags'; */
 import {useState} from "react";
-/* import uuid from "react-uuid"; */
 import {v4 as uuid} from "uuid";
-import { WithContext as ReactTags } from "react-tag-input";
+import useWindowDimensions from './windowResize';
 
 
 function App() {
   const [notes, setNotes] = useState([]); //notes will store all of the notes that are added
   const [active, setActive] = useState(false);
- 
+  const d = new Date();
+  const { width, height } = useWindowDimensions();
+  const [sidebarActive, setSideBarActive] = useState(false);
+  const [textAreaActive, setTextAreaActive] = useState(true);
+
   
   const onAddNote = () => {
     const newNote = {
       id: uuid(),
       title: "New Note",
       text: "",
-      date: Date.now(),
+      date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
       noteTags: [],
     }
 
@@ -31,7 +34,6 @@ function App() {
     if (notes.length === 0) {
       return;
     }
-    console.log("note deleted!");
     var newArray = notes.filter(note => note.id !== noteToDelete.id);
     setNotes(newArray);
     /* setActive(notes[0].id); */
@@ -52,14 +54,18 @@ function App() {
     setNotes(newArray);
   }
 
+  const handleSwitch = () => {
+    setSideBarActive(!sidebarActive);
+    setTextAreaActive(!textAreaActive);
+  }
 
-
+  
 
   return (
     <div className='App'>
-      <SideBar notes={notes} onAddNote={onAddNote} active={active} setActive={setActive}/>
-      <TextArea handleNoteDelete={handleDelete} activeNote={getActive()} onEdit={onEdit}/>
-      <Profile/>
+        <SideBar notes={notes} onAddNote={onAddNote} active={active} setActive={setActive} sidebarActive={sidebarActive} handleSwitch={handleSwitch}/>
+        <TextArea handleNoteDelete={handleDelete} activeNote={getActive()} onEdit={onEdit} textAreaActive={textAreaActive} handleSwitch={handleSwitch}/>
+        <Profile/>
     </div>
   );
 }

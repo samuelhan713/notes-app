@@ -20,6 +20,7 @@ body {
 
 .material-icons {
   cursor: pointer;
+  margin: 5px;
 }
 
 .sidebar {
@@ -83,6 +84,11 @@ img {
   margin: 0;
 }
 
+.text-main {
+  width: 100%;
+  height: 100vh;
+}
+
 .text-main-header {
   display: flex;
   justify-content: space-between;
@@ -90,11 +96,6 @@ img {
   width: 100%;
   /* border-top: solid var(--border-color) 1px; */
   border-bottom: solid var(--border-color) 1px;
-}
-
-.text-main {
-  width: 100%;
-  height: 100vh;
 }
 
 .active {
@@ -215,13 +216,14 @@ select[name="colorTheme"] {
   background-color: rgb(237, 237, 237);
   bottom: 0;
   position: absolute;
-  width: 84%;
+  width: 85%;
   display: flex;
   bottom: 0;
 }
 
 .ReactTags__tags {
   position: relative;
+  margin: 2px;
 }
 .ReactTags__tagInput {
   border-radius: 2px;
@@ -268,6 +270,17 @@ select[name="colorTheme"] {
 @media all and (max-width: 500px) {
   .sidebar {
     display: none;
+  }
+  .text-main {
+    display: none;
+  }
+  /* .sidebar {
+    width: 100vw;
+  }
+ */
+  .activeComponent {
+    display: block;
+    width: 100vw;
   }
 
   .modal {
