@@ -1,15 +1,20 @@
 import './Main.css';
-import React from "react";
+import React, { useEffect } from "react";
 import { WithContext as ReactTags } from "react-tag-input";
 import useWindowDimensions from '../windowResize';
 import { useState } from 'react';
 
 
 
-function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleSwitch}) {
+function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleSwitch, notes}) {
+    /* useEffect(() => {
+        console.log("This counts as useeffect");
+        localStorage.setItem("notes", JSON.stringify(notes));
+    }, [notes]); */
+
+
     const { height, width } = useWindowDimensions();
     const d = new Date();
-
     
     const onType = (field, value) => {
         onEdit(
@@ -23,6 +28,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const onNoteDelete = () => {
         handleNoteDelete(activeNote);
+        localStorage.setItem("notes", JSON.stringify(notes));
     }
 
     const handleDelete = (i) => {
@@ -32,6 +38,8 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const handleAddition = (tag) => {
         activeNote.noteTags.push(tag);
+        localStorage.setItem("notes", JSON.stringify(notes));
+
     }
 
     const handleDrag = (tag, currPos, newPos) => {//????
@@ -40,6 +48,8 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         activeNote.noteTags.splice(newPos, 0, tag);
 
         activeNote.noteTags = [...activeNote.noteTags];
+        localStorage.setItem("notes", JSON.stringify(notes));
+
         /* setTags(newTags); */
     }
 
@@ -75,7 +85,6 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
             </div>
             <div className="main-textarea">
                 <textarea value={activeNote.text} onChange={(e) => onType("text", e.target.value)}/>
-                <div>width: {width} ~ height: {height}</div>
             </div>
             <div className="text-main-footer">
                 <div className="tags">

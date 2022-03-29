@@ -17,7 +17,7 @@ function Sidebar({notes, onAddNote, active, setActive, sidebarActive, handleSwit
             </div>
             <div className="sidebar-notes">
                 {notes.map((note) => ( 
-                    <div className={`sidebar-note ${note.id === active && "active"}`} onClick={() => {setActive(note.id); (width <= 500 && handleSwitch());}}>
+                    <div key={note.id} className={`sidebar-note ${note.id === active && "active"}`} onClick={() => {setActive(note.id); (width <= 500 && handleSwitch());}}>
                         <div className="note-title">
                             <h5>{note.text.length !== 0 ? note.text : "New Note"}</h5>
                         </div>
@@ -30,5 +30,3 @@ function Sidebar({notes, onAddNote, active, setActive, sidebarActive, handleSwit
 }
 
 export default Sidebar;
-
-//pass the id for each note as the key when mapping over things

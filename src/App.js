@@ -3,20 +3,22 @@ import TextArea from './components/TextArea';
 import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 /* import Tags from './components/Tags'; */
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {v4 as uuid} from "uuid";
-import useWindowDimensions from './windowResize';
 
 
 function App() {
-  const [notes, setNotes] = useState([]); //notes will store all of the notes that are added
+  const [notes, setNotes] = useState(JSON.parse(localStorage.notes || [])); //notes will store all of the notes that are added
   const [active, setActive] = useState(false);
   const d = new Date();
-  const { width, height } = useWindowDimensions();
   const [sidebarActive, setSideBarActive] = useState(false);
   const [textAreaActive, setTextAreaActive] = useState(true);
 
-  
+  useEffect(() => {
+    console.log("use effect is triggered!");
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
+
   const onAddNote = () => {
     const newNote = {
       id: uuid(),
@@ -36,7 +38,9 @@ function App() {
     }
     var newArray = notes.filter(note => note.id !== noteToDelete.id);
     setNotes(newArray);
-    /* setActive(notes[0].id); */
+    if (newArray.length !== 0) {
+      setActive(newArray[newArray.length-1].id);
+    }
   }
 
   const getActive = () => { //return the object that has the "active" tag
@@ -64,7 +68,7 @@ function App() {
   return (
     <div className='App'>
         <SideBar notes={notes} onAddNote={onAddNote} active={active} setActive={setActive} sidebarActive={sidebarActive} handleSwitch={handleSwitch}/>
-        <TextArea handleNoteDelete={handleDelete} activeNote={getActive()} onEdit={onEdit} textAreaActive={textAreaActive} handleSwitch={handleSwitch}/>
+        <TextArea handleNoteDelete={handleDelete} activeNote={getActive()} onEdit={onEdit} textAreaActive={textAreaActive} handleSwitch={handleSwitch} notes={notes}/>
         <Profile/>
     </div>
   );

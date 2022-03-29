@@ -189,7 +189,7 @@ input[type="text"] {
   margin-top: 10px;
 }
 
-select[name="colorTheme"] {
+select[name="colorScheme"] {
   width: 98%;
   height: 25px;
 }
