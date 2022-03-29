@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './Main.css';
 
-function Profile({userName, setUserName}) {
+function Profile() {
 
     const [name, setName] = useState(localStorage.name || "");
     const [email, setEmail] = useState(localStorage.email || "");
@@ -18,9 +18,7 @@ function Profile({userName, setUserName}) {
     const handleChange = (s) => {
         setColorScheme(s.target.value);
         localStorage.setItem("colorScheme", s.target.value);
-        console.log("s.value: " + (s.target.value));
       };
-
 
     return (
         <div>

@@ -1,6 +1,6 @@
 import './Main.css';
 import useWindowDimensions from '../windowResize';
-function Sidebar({notes, onAddNote, active, setActive, sidebarActive, handleSwitch}) { //instead of props.notes, you can just use notes
+function Sidebar({notes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
     const { width, height } = useWindowDimensions();
 
     return (

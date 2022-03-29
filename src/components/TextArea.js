@@ -1,19 +1,11 @@
 import './Main.css';
-import React, { useEffect } from "react";
 import { WithContext as ReactTags } from "react-tag-input";
-import useWindowDimensions from '../windowResize';
 import { useState } from 'react';
 
 
 
 function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleSwitch, notes}) {
-    /* useEffect(() => {
-        console.log("This counts as useeffect");
-        localStorage.setItem("notes", JSON.stringify(notes));
-    }, [notes]); */
-
-
-    const { height, width } = useWindowDimensions();
+    const[tags, setTags] = useState([]);
     const d = new Date();
     
     const onType = (field, value) => {
@@ -32,29 +24,22 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
     }
 
     const handleDelete = (i) => {
-        console.log("A tag was deleted!");
         activeNote.noteTags.splice(i, 1);
     }
 
     const handleAddition = (tag) => {
         activeNote.noteTags.push(tag);
         localStorage.setItem("notes", JSON.stringify(notes));
-
     }
 
-    const handleDrag = (tag, currPos, newPos) => {//????
-        /* const newTags = activeNote.noteTags.slice(); */
-        activeNote.noteTags.splice(currPos, 1);
-        activeNote.noteTags.splice(newPos, 0, tag);
+    const handleDrag = (tag, currPos, newPos) => {
+        const newTags = activeNote.noteTags.slice();
+        newTags.splice(currPos, 1);
+        newTags.splice(newPos, 0, tag);
 
-        activeNote.noteTags = [...activeNote.noteTags];
+        activeNote.noteTags = [...newTags];
+        setTags(newTags);
         localStorage.setItem("notes", JSON.stringify(notes));
-
-        /* setTags(newTags); */
-    }
-
-    const handleTagClick = (index) => {
-        console.log("The tag at index " + index + "was clicked!");
     }
 
     const KeyCodes = {
@@ -94,7 +79,6 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
                         handleDelete={handleDelete}
                         handleAddition={handleAddition}
                         handleDrag={handleDrag}
-                        handleTagClick={handleTagClick}
                         inputFieldPosition="inline"
                         placeholder="Enter a tag"
                         autocomplete
