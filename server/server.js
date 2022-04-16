@@ -9,10 +9,14 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 
+/* const bodyParser = require('body-parser');
+app.use(bodyParser.json()); */
+
 var dbURL = process.env.MONGO_URL || 'mongodb://localhost:27017/Notes'; // insert your database URL here
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 
 
 //NOTES
@@ -28,8 +32,8 @@ app.post('/api/notes', async function(req, res) {
 
     try {
         const newNote = new Note({
-            text: /* req.body.text */ "test text",
-            lastUpdatedDate: /* req.body.lastUpdatedDate */"test date",
+            text: req.body.text,
+            lastUpdatedDate: req.body.lastUpdatedDate ,
         })
         // Calling save is needed to save it to the database given we aren't using a special method like the update above
         await newNote.save();

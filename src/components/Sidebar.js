@@ -1,7 +1,17 @@
 import './Main.css';
 import useWindowDimensions from '../windowResize';
-function Sidebar({notes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
+import {useState, useEffect} from "react";
+import {getNotesAPIMethod} from '../api/client';
+function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
     const { width, height } = useWindowDimensions();
+
+    useEffect(() => {
+        console.log("use effect function in sidebar.js");
+        getNotesAPIMethod().then((notes) => {
+          setNotes(notes);
+          console.dir(notes);
+        })
+      }, []);
 
     return (
         <div className={`sidebar ${sidebarActive ? "activeComponent" : "false"}`}>
@@ -17,11 +27,12 @@ function Sidebar({notes, onAddNote, active, setActive, sidebarActive, handleSwit
             </div>
             <div className="sidebar-notes">
                 {notes.map((note) => ( 
-                    <div key={note.id} className={`sidebar-note ${note.id === active && "active"}`} onClick={() => {setActive(note.id); (width <= 500 && handleSwitch());}}>
+                    <div key={note._id} className={`sidebar-note ${note._id === active && "active"}`} onClick={() => {setActive(note._id); (width <= 500 && handleSwitch());}}>
                         <div className="note-title">
+                            {/* {console.log("note.text: " + note.text)} */}
                             <h5>{note.text.length !== 0 ? note.text : "New Note"}</h5>
                         </div>
-                        <div className="note-date">{note.date}</div>
+                        <div className="note-date">{note.lastUpdatedDate}</div>
                     </div>
                 ))}
             </div>

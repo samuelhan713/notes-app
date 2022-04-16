@@ -4,69 +4,60 @@ import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 import {useState, useEffect} from "react";
 import {v4 as uuid} from "uuid";
+import {createNoteAPIMethod, deleteNoteByIdAPIMethod, getNotesAPIMethod} from './api/client';
 
 
 function App() {
   const d = new Date();
-  const initialNotes = [
-    {
-      id: uuid(),
-      title: "New Note",
-      text: "This is a note with a long line of text. This is a test text!",
-      date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
-      noteTags: [],
-    },
-    {
-      id: uuid(),
-      title: "New Note",
-      text: "Here is another example note. Testing, testing, testing!",
-      date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
-      noteTags: [],
-    }
-  ];
+  
+  const [notes, setNotes] = useState([]);
 
-  const [notes, setNotes] = useState(
-    localStorage.notes ? JSON.parse(localStorage.notes) : initialNotes
-  );
   const [active, setActive] = useState(false);
   const [sidebarActive, setSideBarActive] = useState(false);
   const [textAreaActive, setTextAreaActive] = useState(true);
 
-  useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
-
   const onAddNote = () => {
-    const newNote = {
-      id: uuid(),
-      title: "New Note",
-      text: "",
-      date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
-      noteTags: [],
-    }
 
-    setNotes([newNote, ...notes]); 
-    setActive(newNote.id);
+    const newNote = {
+      text: "",
+      lastUpdatedDate: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
+    }
+    createNoteAPIMethod(newNote, (response) => {
+      console.log("Created the author on the server");
+      console.dir(response);
+    });
+
+    getNotesAPIMethod().then((notes) => {
+      setNotes(notes);
+    });
+    setActive(notes[0]._id);
   }
 
   const handleDelete = (noteToDelete) => {
+    deleteNoteByIdAPIMethod(noteToDelete._id).then((response) => {
+      console.log("Deleted the author on the server");
+    });
+
+    getNotesAPIMethod().then((notes) => {
+      setNotes(notes);
+    })
+
     if (notes.length === 0) {
       return;
     }
-    var newArray = notes.filter(note => note.id !== noteToDelete.id);
-    setNotes(newArray);
+    var newArray = notes.filter(note => note._id !== noteToDelete._id);
     if (newArray.length !== 0) {
-      setActive(newArray[newArray.length-1].id);
+      setActive(newArray[newArray.length-1]._id);
     }
   }
 
   const getActive = () => {
-    return notes.find((note) => note.id === active);
+    return notes.find((note) => note._id === active);
   }
 
   const onEdit = (updatedNote) => {
     var newArray = notes.map(note => {
-      if (note.id === updatedNote.id) {
+      if (note._id === updatedNote._id) {
         return updatedNote;
       }
       return note;
@@ -80,10 +71,25 @@ function App() {
     setTextAreaActive(!textAreaActive);
   }
 
+  
+
   return (
     <div className='App'>
-        <SideBar notes={notes} onAddNote={onAddNote} active={active} setActive={setActive} sidebarActive={sidebarActive} handleSwitch={handleSwitch}/>
-        <TextArea handleNoteDelete={handleDelete} activeNote={getActive()} onEdit={onEdit} textAreaActive={textAreaActive} handleSwitch={handleSwitch} notes={notes}/>
+        <SideBar 
+          notes={notes} 
+          setNotes={setNotes} 
+          onAddNote={onAddNote} 
+          active={active} 
+          setActive={setActive} 
+          sidebarActive={sidebarActive} 
+          handleSwitch={handleSwitch}/>
+        <TextArea 
+          handleNoteDelete={handleDelete} 
+          activeNote={getActive()} 
+          onEdit={onEdit} 
+          textAreaActive={textAreaActive} 
+          handleSwitch={handleSwitch} 
+          notes={notes}/>
         <Profile/>
     </div>
   );

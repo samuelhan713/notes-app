@@ -20,7 +20,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const onNoteDelete = () => {
         handleNoteDelete(activeNote);
-        localStorage.setItem("notes", JSON.stringify(notes));
+        /* localStorage.setItem("notes", JSON.stringify(notes)); */
     }
 
     const handleDelete = (i) => {
@@ -29,7 +29,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const handleAddition = (tag) => {
         activeNote.noteTags.push(tag);
-        localStorage.setItem("notes", JSON.stringify(notes));
+        /* localStorage.setItem("notes", JSON.stringify(notes)); */
     }
 
     const handleDrag = (tag, currPos, newPos) => {
@@ -39,7 +39,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
         activeNote.noteTags = [...newTags];
         setTags(newTags);
-        localStorage.setItem("notes", JSON.stringify(notes));
+        /* localStorage.setItem("notes", JSON.stringify(notes)); */
     }
 
     const KeyCodes = {

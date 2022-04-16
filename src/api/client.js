@@ -4,9 +4,8 @@ const defaultHeaders = {
     },
 }
 
-
-
 export const getNotesAPIMethod = () => {
+    console.log("getNotesAPIMethod");
     return fetch(`/api/notes`, {
         ...defaultHeaders,
     }).then(checkStatus)
@@ -14,6 +13,7 @@ export const getNotesAPIMethod = () => {
 }
 
 export const createNoteAPIMethod = (note) => {
+    console.log("createNoteAPIMethod");
     return fetch(`/api/notes`, {
         ...defaultHeaders,
         method: 'POST', // The method defaults to GET
@@ -52,7 +52,7 @@ export const createUserAPIMethod = (user) => {
     return fetch(`/api/users`, {
         ...defaultHeaders,
         method: 'POST', // The method defaults to GET
-        body: JSON.stringify(note),
+        body: JSON.stringify(user),
     }).then(checkStatus)
         .then(parseJSON);
 }
@@ -61,7 +61,7 @@ export const updateUserAPIMethod = (user) => {
     return fetch(`/api/users/${user._id}`, {
         ...defaultHeaders,
         method: 'PUT', // The method defaults to GET
-        body: JSON.stringify(note),
+        body: JSON.stringify(user),
     }).then(checkStatus)
         .then(parseJSON);
 }

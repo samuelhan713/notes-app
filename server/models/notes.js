@@ -5,15 +5,22 @@ var Schema = mongoose.Schema;
 var NoteSchema = new Schema(
     {
         text: {type: String},
-        lastUpdatedDate: {type: String}
+        lastUpdatedDate: {type: String},
     }
 );
 
 
 NoteSchema
-    .virtual('url')
+    .virtual('fullText')
     .get(function () {
-        return '/catalog/note/' + this._id;
+        return this.text + "!";
     });
 
+NoteSchema
+    .virtual('date')
+    .get(function () {
+        return this.lastUpdatedDate;
+    });
+
+//Export model
 module.exports = mongoose.model('Note', NoteSchema);
