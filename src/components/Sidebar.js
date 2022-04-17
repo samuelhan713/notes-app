@@ -4,6 +4,10 @@ import {useState, useEffect} from "react";
 import {getNotesAPIMethod, createNoteAPIMethod} from '../api/client';
 function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
     const { width, height } = useWindowDimensions();
+    console.log("notes: " + notes);
+    const [filteredData, setFilteredData] = useState([]);
+    console.log("filteredData: " + filteredData);
+
 
     useEffect(() => {
         console.log("use effect function in sidebar.js");
@@ -12,6 +16,16 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
           console.dir(notes);
         })
       }, []);
+
+    const handleFilter = (e) => {
+        console.log("getinputvalue");
+        const searchWord = e.target.value;
+        const newFilter = notes.filter((value) => {
+            return value.text.includes(searchWord);
+        });
+        setFilteredData(newFilter);
+        setActive(filteredData[0]._id);
+    }
 
     return (
         <div className={`sidebar ${sidebarActive ? "activeComponent" : "false"}`}>
@@ -23,19 +37,33 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
             </div>
             <div className="search">
                 <span className="material-icons">search</span>
-                <span id="searchText">Search all notes</span>
+                <input type="text" id="searchText" placeholder="Search all notes" onChange={handleFilter}></input>
             </div>
-            <div className="sidebar-notes">
-                {notes.map((note) => ( 
+            {console.log(filteredData)}
+            {filteredData.length !== 0 && (
+                <div className="sidebar-notes">
+                {filteredData.map((note) => ( 
                     <div key={note._id} className={`sidebar-note ${note._id === active && "active"}`} onClick={() => {setActive(note._id); (width <= 500 && handleSwitch());}}>
                         <div className="note-title">
-                            {/* {console.log("note.text: " + note.text)} */}
                             <h5>{note.text.length !== 0 ? note.text : "New Note"}</h5>
                         </div>
                         <div className="note-date">{note.lastUpdatedDate}</div>
                     </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
+            {filteredData.length === 0 && (
+                <div className="sidebar-notes">
+                {notes.map((note) => ( 
+                    <div key={note._id} className={`sidebar-note ${note._id === active && "active"}`} onClick={() => {setActive(note._id); (width <= 500 && handleSwitch());}}>
+                        <div className="note-title">
+                            <h5>{note.text.length !== 0 ? note.text : "New Note"}</h5>
+                        </div>
+                        <div className="note-date">{note.lastUpdatedDate}</div>
+                    </div>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

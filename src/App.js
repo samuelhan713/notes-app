@@ -104,7 +104,8 @@ function App() {
           onEdit={onEdit} 
           textAreaActive={textAreaActive} 
           handleSwitch={handleSwitch} 
-          notes={notes}/>
+          notes={notes}
+          setNotes={setNotes}/>
         <Profile/>
     </div>
   );

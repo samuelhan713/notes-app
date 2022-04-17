@@ -23,7 +23,7 @@ body {
   margin: 5px;
 }
 
-#arrow-back {
+.material-icons.arrow-back {
   display: none;
 }
 
@@ -51,12 +51,14 @@ img {
 .search {
   border-bottom: solid var(--border-color) 1px;
   padding-top: 8px;
+  display: flex;
 }
 #searchText {
   position: relative;
-  top: -9px;
+  top: -5px;
   color: var(--border-color);
   font-size: 13px;
+  border: none;
 }
 
 .sidebar-note {
@@ -285,7 +287,7 @@ select[name="colorScheme"] {
     width: 100%;
   }
 
-  #arrow-back {
+  .material-icons.arrow-back {
     display: inline;
   }
 }

@@ -7,7 +7,6 @@ const defaultHeaders = {
 }
 
 export const getNotesAPIMethod = () => {
-    console.log("getNotesAPIMethod");
     return fetch(`/api/notes`, {
         ...defaultHeaders,
     }).then(checkStatus)

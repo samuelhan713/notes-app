@@ -1,11 +1,23 @@
 import './Main.css';
 import { WithContext as ReactTags } from "react-tag-input";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {updateNoteAPIMethod} from '../api/client';
 
 
 
-function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleSwitch, notes}) {
+function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleSwitch, notes, setNotes}) {
+
+    useEffect(() => {
+        if (notes.length === 0) {
+            return
+        }
+        console.log("use effect function in textarea.js");
+        updateNoteAPIMethod().then((notes) => {
+          setNotes(notes);
+          console.dir(notes);
+        })
+      }, []);
+
     const[tags, setTags] = useState([]);
     const d = new Date();
     
@@ -21,7 +33,6 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const onNoteDelete = () => {
         handleNoteDelete(activeNote);
-        /* localStorage.setItem("notes", JSON.stringify(notes)); */
     }
 
     const handleDelete = (i) => {
@@ -30,7 +41,6 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const handleAddition = (tag) => {
         activeNote.noteTags.push(tag);
-        /* localStorage.setItem("notes", JSON.stringify(notes)); */
     }
 
     const handleDrag = (tag, currPos, newPos) => {
@@ -40,11 +50,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
         activeNote.noteTags = [...newTags];
         setTags(newTags);
-        /* localStorage.setItem("notes", JSON.stringify(notes)); */
     }
-
-
-    
 
     const KeyCodes = {
         enter: 13
@@ -56,7 +62,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         return (
             <div className={`text-main ${textAreaActive ? "activeComponent" : "false"}`}>
                 <div className="text-main-header">
-                    <span className="material-icons" onClick={handleSwitch}>arrow_back</span>
+                    <span className="material-icons arrow-back" onClick={handleSwitch}>arrow_back</span>
                     <span className="material-icons">notification_add</span>
                     <span className="material-icons">person_add_alt</span>
                     <span className="material-icons" onClick={onNoteDelete}>delete</span>
@@ -67,11 +73,10 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
     return (
         <div className={`text-main ${textAreaActive ? "activeComponent" : "false"}`}>
             <div className="text-main-header">
-                <span className="material-icons" id="arrow-back" onClick={handleSwitch}>arrow_back</span>
+                <span className="material-icons arrow-back" onClick={handleSwitch}>arrow_back</span>
                 <span className="material-icons">notification_add</span>
                 <span className="material-icons">person_add_alt</span>
                 <span className="material-icons" onClick={onNoteDelete}>delete</span>
-                <button>Save</button>
             </div>
             <div className="main-textarea">
                 <textarea value={activeNote.text} onChange={(e) => onType("text", e.target.value)}/>
