@@ -17,7 +17,11 @@ mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-
+function wrapAsync(fn) {
+    return function (req, res, next) {
+        fn(req, res, next).catch(e => next(e))
+    }
+}
 
 //NOTES
 //get all notes
@@ -25,6 +29,23 @@ app.get('/api/notes', async function (req,res) {
     const notes = await Note.find({});
     res.json(notes);
 });
+
+//get notes with specific ID
+app.get('/api/notes/:id', wrapAsync(async function (req,res, next) {
+    let id = req.params.id;
+    if (mongoose.isValidObjectId(id)) {
+        const note = await Note.findById(id);
+        if (note) {
+            res.json(note);
+            return;
+        } else {
+            // The thrown error will be handled by the error handling middleware
+            throw new Error('Note Not Found');
+        }
+    } else {
+        throw new Error('Invalid Note Id');
+    }
+}));
 
 //create a new note
 app.post('/api/notes', async function(req, res) {

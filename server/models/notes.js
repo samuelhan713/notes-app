@@ -6,6 +6,7 @@ var NoteSchema = new Schema(
     {
         text: {type: String},
         lastUpdatedDate: {type: String},
+        noteTags: {type: Array}
     }
 );
 

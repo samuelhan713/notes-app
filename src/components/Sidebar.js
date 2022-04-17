@@ -1,7 +1,7 @@
 import './Main.css';
 import useWindowDimensions from '../windowResize';
 import {useState, useEffect} from "react";
-import {getNotesAPIMethod} from '../api/client';
+import {getNotesAPIMethod, createNoteAPIMethod} from '../api/client';
 function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
     const { width, height } = useWindowDimensions();
 

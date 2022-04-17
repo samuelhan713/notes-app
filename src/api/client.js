@@ -1,6 +1,8 @@
 const defaultHeaders = {
     headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
+        'Content-Type': 'application/json; charset=UTF-8',
+        /* "Access-Control-Allow-Origin" : "*", 
+        "Access-Control-Allow-Credentials" : true, */
     },
 }
 
@@ -13,7 +15,7 @@ export const getNotesAPIMethod = () => {
 }
 
 export const createNoteAPIMethod = (note) => {
-    console.log("createNoteAPIMethod");
+    console.log("note: " + note);
     return fetch(`/api/notes`, {
         ...defaultHeaders,
         method: 'POST', // The method defaults to GET
@@ -23,6 +25,7 @@ export const createNoteAPIMethod = (note) => {
 }
 
 export const updateNoteAPIMethod = (note) => {
+    console.log("note: " + note);
     return fetch(`/api/notes/${note._id}`, {
         ...defaultHeaders,
         method: 'PUT', // The method defaults to GET
@@ -32,9 +35,17 @@ export const updateNoteAPIMethod = (note) => {
 }
 
 export const deleteNoteByIdAPIMethod = (noteId) => {
+    console.log("noteId: " + noteId);
     return fetch(`/api/notes/${noteId}`, {
         ...defaultHeaders,
         method: 'DELETE',
+    }).then(checkStatus)
+        .then(parseJSON);
+}
+
+export const getNoteByIdAPIMethod = (noteId) => {
+    return fetch(`/api/notes/${noteId}`, {
+        ...defaultHeaders,
     }).then(checkStatus)
         .then(parseJSON);
 }
@@ -89,5 +100,6 @@ function checkStatus(response) {
 }
 
 function parseJSON(response) {
+    console.log("response: " + response);
     return response.json();
 }

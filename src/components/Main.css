@@ -23,6 +23,10 @@ body {
   margin: 5px;
 }
 
+#arrow-back {
+  display: none;
+}
+
 .sidebar {
   width: var(--sidebar-width);
   height: 100vh;
@@ -281,7 +285,7 @@ select[name="colorScheme"] {
     width: 100%;
   }
 
-  #arr {
+  #arrow-back {
     display: inline;
   }
 }

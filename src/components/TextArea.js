@@ -1,6 +1,7 @@
 import './Main.css';
 import { WithContext as ReactTags } from "react-tag-input";
 import { useState } from 'react';
+import {updateNoteAPIMethod} from '../api/client';
 
 
 
@@ -42,6 +43,9 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         /* localStorage.setItem("notes", JSON.stringify(notes)); */
     }
 
+
+    
+
     const KeyCodes = {
         enter: 13
     };
@@ -63,10 +67,11 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
     return (
         <div className={`text-main ${textAreaActive ? "activeComponent" : "false"}`}>
             <div className="text-main-header">
-                <span className="material-icons" onClick={handleSwitch}>arrow_back</span>
+                <span className="material-icons" id="arrow-back" onClick={handleSwitch}>arrow_back</span>
                 <span className="material-icons">notification_add</span>
                 <span className="material-icons">person_add_alt</span>
                 <span className="material-icons" onClick={onNoteDelete}>delete</span>
+                <button>Save</button>
             </div>
             <div className="main-textarea">
                 <textarea value={activeNote.text} onChange={(e) => onType("text", e.target.value)}/>

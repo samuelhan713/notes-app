@@ -2,25 +2,34 @@ import './App.css';
 import TextArea from './components/TextArea';
 import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {v4 as uuid} from "uuid";
-import {createNoteAPIMethod, deleteNoteByIdAPIMethod, getNotesAPIMethod} from './api/client';
+import {createNoteAPIMethod, deleteNoteByIdAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, updateNoteAPIMethod} from './api/client';
+import {useParams} from "react-router";
 
 
 function App() {
+  useEffect(() => {
+    console.log("use effect function in App.js");
+    getNotesAPIMethod().then((notes) => {
+      setNotes(notes);
+      console.dir(notes);
+    })
+  }, []);
   const d = new Date();
   
   const [notes, setNotes] = useState([]);
+  let { noteId } = useParams();
 
   const [active, setActive] = useState(false);
   const [sidebarActive, setSideBarActive] = useState(false);
   const [textAreaActive, setTextAreaActive] = useState(true);
 
   const onAddNote = () => {
-
     const newNote = {
       text: "",
       lastUpdatedDate: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
+      noteTags: [],
     }
     createNoteAPIMethod(newNote, (response) => {
       console.log("Created the author on the server");
@@ -29,11 +38,16 @@ function App() {
 
     getNotesAPIMethod().then((notes) => {
       setNotes(notes);
+      console.log("notes set!");
+      console.log("notes: " + notes);
     });
     setActive(notes[0]._id);
   }
 
   const handleDelete = (noteToDelete) => {
+    if (notes.length === 0) {
+      return;
+    }
     deleteNoteByIdAPIMethod(noteToDelete._id).then((response) => {
       console.log("Deleted the author on the server");
     });
@@ -42,9 +56,6 @@ function App() {
       setNotes(notes);
     })
 
-    if (notes.length === 0) {
-      return;
-    }
     var newArray = notes.filter(note => note._id !== noteToDelete._id);
     if (newArray.length !== 0) {
       setActive(newArray[newArray.length-1]._id);
@@ -56,13 +67,17 @@ function App() {
   }
 
   const onEdit = (updatedNote) => {
+    console.log("noteId: " + noteId);
+
+    updateNoteAPIMethod(updatedNote).then((response) => {
+      console.log("Updated note on the server");
+    }) 
     var newArray = notes.map(note => {
       if (note._id === updatedNote._id) {
         return updatedNote;
       }
       return note;
     })
-
     setNotes(newArray);
   }
 
@@ -78,7 +93,7 @@ function App() {
         <SideBar 
           notes={notes} 
           setNotes={setNotes} 
-          onAddNote={onAddNote} 
+          onAddNote={onAddNote}
           active={active} 
           setActive={setActive} 
           sidebarActive={sidebarActive} 
