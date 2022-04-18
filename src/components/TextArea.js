@@ -1,7 +1,7 @@
 import './Main.css';
 import { WithContext as ReactTags } from "react-tag-input";
 import { useEffect, useState } from 'react';
-import {updateNoteAPIMethod} from '../api/client';
+import {updateNoteAPIMethod, getNotesAPIMethod} from '../api/client';
 
 
 
@@ -12,13 +12,13 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
             return
         }
         console.log("use effect function in textarea.js");
-        updateNoteAPIMethod().then((notes) => {
+        updateNoteAPIMethod(activeNote).then((notes) => {
           setNotes(notes);
           console.dir(notes);
         })
-      }, []);
+    }, []);
 
-    const[tags, setTags] = useState([]);
+    const[tags, setTags] = useState(activeNote !== undefined ? activeNote.noteTags : []);
     const d = new Date();
     
     const onType = (field, value) => {
@@ -27,6 +27,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
                 ...activeNote,
                 [field]:value,
                 date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
+                noteTags: activeNote.noteTags,
             }
         )
     }
@@ -41,6 +42,9 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const handleAddition = (tag) => {
         activeNote.noteTags.push(tag);
+        setTags(activeNote.noteTags);
+        onType("noteTags", activeNote.noteTags);
+        console.log(activeNote.noteTags);
     }
 
     const handleDrag = (tag, currPos, newPos) => {
@@ -55,6 +59,10 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
     const KeyCodes = {
         enter: 13
     };
+
+    function test() {
+        console.log("THIS IS A TEST");
+    }
 
     const delimiters = [KeyCodes.enter];
 

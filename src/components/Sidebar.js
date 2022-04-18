@@ -16,13 +16,16 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
       }, []);
 
     const handleFilter = (e) => {
+        if (notes.length === 0) {
+            return;
+        }
         console.log("getinputvalue");
         const searchWord = e.target.value;
         const newFilter = notes.filter((value) => {
             return value.text.includes(searchWord);
         });
         setFilteredData(newFilter);
-        setActive(filteredData[0]._id);
+        setActive(filteredData[0] !== undefined ? filteredData[0]._id : null);
     }
 
     return (

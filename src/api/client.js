@@ -14,7 +14,6 @@ export const getNotesAPIMethod = () => {
 }
 
 export const createNoteAPIMethod = (note) => {
-    console.log("note: " + note);
     return fetch(`/api/notes`, {
         ...defaultHeaders,
         method: 'POST', // The method defaults to GET

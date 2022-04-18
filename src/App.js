@@ -12,53 +12,44 @@ function App() {
   useEffect(() => {
     console.log("use effect function in App.js");
     getNotesAPIMethod().then((notes) => {
-      setNotes(notes);
+      setNotes(notes.reverse());
       console.dir(notes);
     })
   }, []);
   const d = new Date();
   
   const [notes, setNotes] = useState([]);
-  let { noteId } = useParams();
+  const [newNote, setNewNote] = useState("");
 
   const [active, setActive] = useState(false);
   const [sidebarActive, setSideBarActive] = useState(false);
   const [textAreaActive, setTextAreaActive] = useState(true);
 
-  const onAddNote = () => {
-    const newNote = {
-      text: "",
-      lastUpdatedDate: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
-      noteTags: [],
-    }
-    createNoteAPIMethod(newNote, (response) => {
-      console.log("Created the author on the server");
-      console.dir(response);
-    });
-
-    getNotesAPIMethod().then((notes) => {
-      setNotes(notes);
-      console.log("notes set!");
-      console.log("notes: " + notes);
-    });
-    setActive(notes[0]._id);
+  const onAddNote = async () => {
+    const data = await fetch("/api/notes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        text: newNote,
+        lastUpdatedDate: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
+        noteTags: [],
+      })
+    }).then(res => res.json());
+    setNotes([data, ...notes]);
+    setNewNote("");
+    setActive(data._id);
   }
 
-  const handleDelete = (noteToDelete) => {
-    if (notes.length === 0) {
-      return;
-    }
-    deleteNoteByIdAPIMethod(noteToDelete._id).then((response) => {
-      console.log("Deleted the author on the server");
-    });
-
-    getNotesAPIMethod().then((notes) => {
-      setNotes(notes);
-    })
-
-    var newArray = notes.filter(note => note._id !== noteToDelete._id);
-    if (newArray.length !== 0) {
-      setActive(newArray[newArray.length-1]._id);
+  const handleDelete = async noteToDelete => {
+    const data = await fetch(`/api/notes/${noteToDelete._id}`, {
+      method: "DELETE"
+    }).then(res => res.json());
+    setNotes(notes => notes.filter(notes => notes._id !== data._id));
+    if (notes.length !== 0) {
+      console.dir(notes);
+      setActive(notes[notes.length-1]._id);
     }
   }
 
@@ -67,7 +58,8 @@ function App() {
   }
 
   const onEdit = (updatedNote) => {
-    console.log("noteId: " + noteId);
+    console.log("updated note: ");
+    console.dir(updatedNote);
 
     updateNoteAPIMethod(updatedNote).then((response) => {
       console.log("Updated note on the server");
