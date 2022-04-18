@@ -29,8 +29,7 @@ export const updateNoteAPIMethod = (note) => {
         ...defaultHeaders,
         method: 'PUT', // The method defaults to GET
         body: JSON.stringify(note),
-    }).then(checkStatus)
-        .then(parseJSON);
+    }).then(checkStatus);
 }
 
 export const deleteNoteByIdAPIMethod = (noteId) => {
@@ -51,8 +50,15 @@ export const getNoteByIdAPIMethod = (noteId) => {
 
 
 //USERS
-export const getUserAPIMethod = () => {
+export const getUsersAPIMethod = () => {
     return fetch(`/api/users`, {
+        ...defaultHeaders,
+    }).then(checkStatus)
+        .then(parseJSON);
+}
+
+export const getUserByIdAPIMethod = (userId) => {
+    return fetch(`/api/users/${userId}`, {
         ...defaultHeaders,
     }).then(checkStatus)
         .then(parseJSON);
@@ -72,8 +78,7 @@ export const updateUserAPIMethod = (user) => {
         ...defaultHeaders,
         method: 'PUT', // The method defaults to GET
         body: JSON.stringify(user),
-    }).then(checkStatus)
-        .then(parseJSON);
+    }).then(checkStatus);
 }
 
 export const deleteUserByIdAPIMethod = (userId) => {

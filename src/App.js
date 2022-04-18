@@ -4,7 +4,7 @@ import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 import React, {useState, useEffect} from "react";
 import {v4 as uuid} from "uuid";
-import {createNoteAPIMethod, deleteNoteByIdAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, updateNoteAPIMethod} from './api/client';
+import {createNoteAPIMethod, deleteNoteByIdAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, updateNoteAPIMethod, createUserAPIMethod, updateUserAPIMethod, getUserByIdAPIMethod} from './api/client';
 import {useParams} from "react-router";
 
 
@@ -86,6 +86,14 @@ function App() {
     setTextAreaActive(!textAreaActive);
   }
 
+  const handleSubmit = (user) => {
+    updateUserAPIMethod(user, (response) => {
+        console.log("Created the user on the server");
+        console.dir(response);
+    });
+    console.log("user in app:");
+    console.dir(user);
+  }
   
 
   return (
@@ -106,7 +114,7 @@ function App() {
           handleSwitch={handleSwitch} 
           notes={notes}
           setNotes={setNotes}/>
-        <Profile/>
+        <Profile onSubmit={handleSubmit}/>
     </div>
   );
 }

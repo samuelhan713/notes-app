@@ -1,31 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Main.css';
+import {createNoteAPIMethod, createUserAPIMethod, getUserByIdAPIMethod, getUsersAPIMethod, updateUserAPIMethod} from '../api/client';
 
-function Profile() {
 
-    const [name, setName] = useState(localStorage.name || "");
-    const [email, setEmail] = useState(localStorage.email || "");
-    const [colorScheme, setColorScheme] = useState(localStorage.colorScheme);
+function Profile(props) {
+    const [user, setUser] = useState(props.user || {});
 
-    const onSubmit = () => {
-        const name = document.getElementById("name");
-        const email = document.getElementById("email");
+    useEffect(() => {
+        console.log("useEffect function in profile.js");
+        getUserByIdAPIMethod("625d428933a13d44c2779b21").then((user) => {
+            setUser(user);
+        })
 
-        localStorage.setItem("name", name.value);
-        localStorage.setItem("email", email.value);
+        console.log("user: " + user);
+    }, []);
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log("Submitted user form");
+        console.dir(user);
+        props.onSubmit(user);
     }
 
-    const handleChange = (s) => {
-        setColorScheme(s.target.value);
-        localStorage.setItem("colorScheme", s.target.value);
-      };
+    const handleChange = (event) => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        const updatedUser = {...user, [name]: value};
+        setUser(updatedUser);
+        console.log("user:");
+        console.dir(user);
+    };
 
     return (
         <div>
             <input type="checkbox" id="modal"/>
             <label htmlFor="modal" className="modal-background"></label>
             <div className="modal">
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="innerContainer" id="inner">
                         <h3>Edit Profile</h3>
                         <label htmlFor="modal">
@@ -37,17 +50,17 @@ function Profile() {
                             <span>Remove Image</span>
                         </div>
                         <label htmlFor="name">Name</label>
-                        <input value={name} type="text" placeholder="Enter Name" name="name" id="name" onChange={(e) => setName(e.target.value)}/>
+                        <input value={user.name} type="text" placeholder="Enter Name" name="name" id="name" onChange={handleChange}/>
                         <label htmlFor="email">Email</label>
-                        <input value={email} type="text" placeholder="Enter Email" name="email" id="email" onChange={(e) => setEmail(e.target.value)}/>
+                        <input value={user.email} type="text" placeholder="Enter Email" name="email" id="email" onChange={handleChange}/>
                         <label htmlFor="theme">Color Scheme</label>
                         <br/>
-                        <select name="colorScheme" id="colorScheme" value={colorScheme} onChange={handleChange}>
+                        <select name="colorScheme" id="colorScheme" value={user.colorScheme} onChange={handleChange}>
                             <option value="light">light</option>
                             <option value="dark">dark</option>
                         </select>
                         <div className="profileBottom">
-                            <button type="submit" className="savebtn" onClick={onSubmit}>Save</button>
+                            <input type="submit" className="savebtn"/>
                             <button type="button" className="logoutbtn">Logout</button>
                         </div>
                     </div>

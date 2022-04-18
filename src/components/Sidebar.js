@@ -4,9 +4,7 @@ import {useState, useEffect} from "react";
 import {getNotesAPIMethod, createNoteAPIMethod} from '../api/client';
 function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
     const { width, height } = useWindowDimensions();
-    console.log("notes: " + notes);
     const [filteredData, setFilteredData] = useState([]);
-    console.log("filteredData: " + filteredData);
 
 
     useEffect(() => {
@@ -39,7 +37,6 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
                 <span className="material-icons">search</span>
                 <input type="text" id="searchText" placeholder="Search all notes" onChange={handleFilter}></input>
             </div>
-            {console.log(filteredData)}
             {filteredData.length !== 0 && (
                 <div className="sidebar-notes">
                 {filteredData.map((note) => ( 

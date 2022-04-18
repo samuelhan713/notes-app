@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-/* const { default: Profile } = require('../../src/components/profile'); */
 
 var Schema = mongoose.Schema;
 
