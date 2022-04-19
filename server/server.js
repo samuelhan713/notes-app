@@ -12,7 +12,7 @@ app.use(express.json());
 /* const bodyParser = require('body-parser');
 app.use(bodyParser.json()); */
 
-var dbURL = process.env.MONGO_URL || 'mongodb://localhost:27017/Notes'; // insert your database URL here
+var dbURL = process.env.MONGO_URL || 'mongodb+srv://samuelhan:BON28qGBTQL8ZKfK@cluster0.iln76.mongodb.net/test'; // insert your database URL here
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -87,7 +87,7 @@ app.put('/api/notes/:id', async function (req,res) {
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     // This below method automatically saves it to the database
     Note.findByIdAndUpdate(id,
-        {'text': req.body.text},
+        {'text': req.body.text, 'lastUpdatedDate': req.body.lastUpdatedDate, 'noteTags': req.body.noteTags},
         function (error, result) {
             if (error) {
                 console.log("ERROR: " + error);

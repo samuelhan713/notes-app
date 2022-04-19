@@ -8,7 +8,7 @@ function Profile(props) {
 
     useEffect(() => {
         console.log("useEffect function in profile.js");
-        getUserByIdAPIMethod("625d428933a13d44c2779b21").then((user) => {
+        getUserByIdAPIMethod("625db9a7c12ffa9604bd0e3f").then((user) => {
             setUser(user);
         })
 

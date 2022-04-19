@@ -1,7 +1,8 @@
 import './Main.css';
 import { WithContext as ReactTags } from "react-tag-input";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback} from 'react';
 import {updateNoteAPIMethod, getNotesAPIMethod} from '../api/client';
+import {debounce} from 'lodash';
 
 
 
@@ -20,8 +21,29 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const[tags, setTags] = useState(activeNote !== undefined ? activeNote.noteTags : []);
     const d = new Date();
+
+    /* function debounce(func, timeout = 1000) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        }
+    } */
+
+    /*
+    function debounceEvent(...args) {
+        this.debouncedEvent = debounce(...args);
+        return e => {
+            e.persist();
+            return this.debouncedEvent(e);
+        }
+    }
+
+    const handleChange = (e) => {
+        onType("text", e);
+    };
     
-    const onType = (field, value) => {
+    const onType = useCallback(debounce((field, value) => {
         onEdit(
             {
                 ...activeNote,
@@ -30,7 +52,23 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
                 noteTags: activeNote.noteTags,
             }
         )
-    }
+        console.dir(activeNote);
+    }, 1000)); */
+
+    const onType = (field, value) => {
+        onEdit(
+            {
+                ...activeNote,
+                [field]:value,
+                date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
+            }
+        )
+    };
+
+
+    /* const sort = () => {
+        setNotes([activeNote, ...notes.filter(item => item._id !== activeNote._id)]);
+    }  */
 
     const onNoteDelete = () => {
         handleNoteDelete(activeNote);
@@ -38,12 +76,15 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
     const handleDelete = (i) => {
         activeNote.noteTags.splice(i, 1);
+        setTags(activeNote.noteTags);
+        onType("noteTags", activeNote.noteTags);
     }
 
     const handleAddition = (tag) => {
         activeNote.noteTags.push(tag);
         setTags(activeNote.noteTags);
         onType("noteTags", activeNote.noteTags);
+        console.log("activeNote.noteTags: ");
         console.log(activeNote.noteTags);
     }
 
@@ -59,10 +100,6 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
     const KeyCodes = {
         enter: 13
     };
-
-    function test() {
-        console.log("THIS IS A TEST");
-    }
 
     const delimiters = [KeyCodes.enter];
 

@@ -15,6 +15,8 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
         })
       }, []);
 
+    
+
     const handleFilter = (e) => {
         if (notes.length === 0) {
             return;

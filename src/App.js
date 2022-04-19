@@ -2,10 +2,11 @@ import './App.css';
 import TextArea from './components/TextArea';
 import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import {v4 as uuid} from "uuid";
 import {createNoteAPIMethod, deleteNoteByIdAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, updateNoteAPIMethod, createUserAPIMethod, updateUserAPIMethod, getUserByIdAPIMethod} from './api/client';
 import {useParams} from "react-router";
+import debounce from "lodash";
 
 
 function App() {
@@ -70,8 +71,9 @@ function App() {
       }
       return note;
     })
+    
     setNotes(newArray);
-  }
+  };
 
   const handleSwitch = () => {
     setSideBarActive(!sidebarActive);
