@@ -73,7 +73,7 @@ function App() {
 
   const handleSubmit = (user) => {
     updateUserAPIMethod(user, (response) => {
-        console.log("Created the user on the server");
+        console.log("Updated the user on the server");
         console.dir(response);
     });
   }

@@ -18,6 +18,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
     const[tags, setTags] = useState(activeNote !== undefined ? activeNote.noteTags : []);
     const d = new Date();
 
+
     const onType = (field, value) => {
         onEdit(
             {

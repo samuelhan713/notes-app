@@ -36,7 +36,6 @@ app.get('/api/notes/:id', wrapAsync(async function (req,res, next) {
             res.json(note);
             return;
         } else {
-            // The thrown error will be handled by the error handling middleware
             throw new Error('Note Not Found');
         }
     } else {
@@ -53,7 +52,6 @@ app.post('/api/notes', async function(req, res) {
             text: req.body.text,
             lastUpdatedDate: req.body.lastUpdatedDate ,
         })
-        // Calling save is needed to save it to the database given we aren't using a special method like the update above
         await newNote.save();
         res.json(newNote);
     } catch (error) {
@@ -82,7 +80,6 @@ app.delete('/api/notes/:id', async function (req,res) {
 app.put('/api/notes/:id', async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
-    // This below method automatically saves it to the database
     Note.findByIdAndUpdate(id,
         {'text': req.body.text, 'lastUpdatedDate': req.body.lastUpdatedDate, 'noteTags': req.body.noteTags},
         function (error, result) {
@@ -90,8 +87,6 @@ app.put('/api/notes/:id', async function (req,res) {
                 console.log("ERROR: " + error);
                 res.status(404).send(error.message);
             } else {
-                // Status 204 represents success with no content
-                // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204
                 res.sendStatus(204);
             }
         });
@@ -118,11 +113,10 @@ app.post('/api/users', async function (req,res) {
 
     try {
         const newUser = new User({
-            name: /* req.body.name */"Sam",
+            name: req.body.name,
             email: req.body.email,
             colorScheme: req.body.colorScheme,
         })
-        // Calling save is needed to save it to the database given we aren't using a special method like the update above
         await newUser.save();
         res.json(newUser);
     } catch (error) {
@@ -134,16 +128,13 @@ app.post('/api/users', async function (req,res) {
 app.put('/api/users/:id', async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
-    // This below method automatically saves it to the database
     User.findByIdAndUpdate(id,
-        {'name': req.body.name, "email": req.body.email},
+        {'name': req.body.name, "email": req.body.email, 'colorScheme': req.body.colorScheme},
         function (error, result) {
             if (error) {
                 console.log("ERROR: " + error);
                 res.status(404).send(error.message);
             } else {
-                // Status 204 represents success with no content
-                // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204
                 res.sendStatus(204);
             }
         });

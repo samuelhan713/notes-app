@@ -23,5 +23,4 @@ NoteSchema
         return this.lastUpdatedDate;
     });
 
-//Export model
 module.exports = mongoose.model('Note', NoteSchema);

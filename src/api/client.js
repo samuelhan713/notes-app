@@ -14,7 +14,7 @@ export const getNotesAPIMethod = () => {
 export const createNoteAPIMethod = (note) => {
     return fetch(`/api/notes`, {
         ...defaultHeaders,
-        method: 'POST', // The method defaults to GET
+        method: 'POST', 
         body: JSON.stringify(note),
     }).then(checkStatus)
         .then(parseJSON);
@@ -23,7 +23,7 @@ export const createNoteAPIMethod = (note) => {
 export const updateNoteAPIMethod = (note) => {
     return fetch(`/api/notes/${note._id}`, {
         ...defaultHeaders,
-        method: 'PUT', // The method defaults to GET
+        method: 'PUT', 
         body: JSON.stringify(note),
     }).then(checkStatus);
 }
@@ -62,7 +62,7 @@ export const getUserByIdAPIMethod = (userId) => {
 export const createUserAPIMethod = (user) => {
     return fetch(`/api/users`, {
         ...defaultHeaders,
-        method: 'POST', // The method defaults to GET
+        method: 'POST', 
         body: JSON.stringify(user),
     }).then(checkStatus)
         .then(parseJSON);
@@ -71,7 +71,7 @@ export const createUserAPIMethod = (user) => {
 export const updateUserAPIMethod = (user) => {
     return fetch(`/api/users/${user._id}`, {
         ...defaultHeaders,
-        method: 'PUT', // The method defaults to GET
+        method: 'PUT', 
         body: JSON.stringify(user),
     }).then(checkStatus);
 }

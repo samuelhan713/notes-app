@@ -1,24 +1,18 @@
 import { useEffect, useState } from 'react';
 import './Main.css';
-import {createNoteAPIMethod, createUserAPIMethod, getUserByIdAPIMethod, getUsersAPIMethod, updateUserAPIMethod} from '../api/client';
+import {getUserByIdAPIMethod} from '../api/client';
 
 
 function Profile(props) {
     const [user, setUser] = useState(props.user || {});
 
     useEffect(() => {
-        console.log("useEffect function in profile.js");
         getUserByIdAPIMethod("625db9a7c12ffa9604bd0e3f").then((user) => {
             setUser(user);
         })
-
-        console.log("user: " + user);
     }, []);
 
     const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log("Submitted user form");
-        console.dir(user);
         props.onSubmit(user);
     }
 
@@ -29,8 +23,6 @@ function Profile(props) {
 
         const updatedUser = {...user, [name]: value};
         setUser(updatedUser);
-        console.log("user:");
-        console.dir(user);
     };
 
     return (

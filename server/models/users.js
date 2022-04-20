@@ -6,7 +6,7 @@ var UserSchema = new Schema(
     {
         name: {type: String},
         email: {type: String},
-        colorScheme: {type: String}, //(?)
+        colorScheme: {type: String},
     }
 );
 
