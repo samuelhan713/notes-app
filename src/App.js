@@ -2,21 +2,11 @@ import './App.css';
 import TextArea from './components/TextArea';
 import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
-import React, {useState, useEffect, useCallback} from "react";
-import {v4 as uuid} from "uuid";
-import {createNoteAPIMethod, deleteNoteByIdAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, updateNoteAPIMethod, createUserAPIMethod, updateUserAPIMethod, getUserByIdAPIMethod} from './api/client';
-import {useParams} from "react-router";
-import debounce from "lodash";
+import React, {useState, useEffect} from "react";
+import {getNotesAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
 
 
 function App() {
-  useEffect(() => {
-    console.log("use effect function in App.js");
-    getNotesAPIMethod().then((notes) => {
-      setNotes(notes.reverse());
-      console.dir(notes);
-    })
-  }, []);
   const d = new Date();
   
   const [notes, setNotes] = useState([]);
@@ -25,6 +15,7 @@ function App() {
   const [active, setActive] = useState(false);
   const [sidebarActive, setSideBarActive] = useState(false);
   const [textAreaActive, setTextAreaActive] = useState(true);
+  
 
   const onAddNote = async () => {
     const data = await fetch("/api/notes", {
@@ -44,13 +35,16 @@ function App() {
   }
 
   const handleDelete = async noteToDelete => {
+    if (notes.length === 0) {
+      return;
+    }
     const data = await fetch(`/api/notes/${noteToDelete._id}`, {
       method: "DELETE"
     }).then(res => res.json());
     setNotes(notes => notes.filter(notes => notes._id !== data._id));
-    if (notes.length !== 0) {
-      console.dir(notes);
-      setActive(notes[notes.length-1]._id);
+    var tempNotes = [...notes.filter(notes => notes._id !== data._id)];
+    if (notes.length !== 1) {
+      setActive(tempNotes[tempNotes.length-1]._id);
     }
   }
 
@@ -59,9 +53,6 @@ function App() {
   }
 
   const onEdit = (updatedNote) => {
-    console.log("updated note: ");
-    console.dir(updatedNote);
-
     updateNoteAPIMethod(updatedNote).then((response) => {
       console.log("Updated note on the server");
     }) 
@@ -71,8 +62,8 @@ function App() {
       }
       return note;
     })
-    
-    setNotes(newArray);
+    var sortedNotes = [updatedNote, ...newArray.filter(item => item._id !== updatedNote._id)]
+    setNotes(sortedNotes);
   };
 
   const handleSwitch = () => {
@@ -85,10 +76,23 @@ function App() {
         console.log("Created the user on the server");
         console.dir(response);
     });
-    console.log("user in app:");
-    console.dir(user);
+  }
+
+  function sort() {
+    if (notes.length === 0) {
+      return;
+    }
+    notes.sort(function(a,b){
+      return new Date(b.lastUpdatedDate) - new Date(a.lastUpdatedDate);
+    });
   }
   
+  useEffect(() => {
+    getNotesAPIMethod().then((notes) => {
+      setNotes(notes.reverse());
+    })
+  }, []);
+  sort();
 
   return (
     <div className='App'>

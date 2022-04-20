@@ -1,34 +1,31 @@
 import './Main.css';
 import useWindowDimensions from '../windowResize';
 import {useState, useEffect} from "react";
-import {getNotesAPIMethod, createNoteAPIMethod} from '../api/client';
+import {getNotesAPIMethod} from '../api/client';
 function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
     const { width, height } = useWindowDimensions();
     const [filteredData, setFilteredData] = useState([]);
 
-
     useEffect(() => {
-        console.log("use effect function in sidebar.js");
         getNotesAPIMethod().then((notes) => {
           setNotes(notes);
           console.dir(notes);
         })
       }, []);
 
-    
-
     const handleFilter = (e) => {
         if (notes.length === 0) {
             return;
         }
-        console.log("getinputvalue");
         const searchWord = e.target.value;
         const newFilter = notes.filter((value) => {
             return value.text.includes(searchWord);
         });
         setFilteredData(newFilter);
-        setActive(filteredData[0] !== undefined ? filteredData[0]._id : null);
+        var tempFilteredData = [...notes.filter((value) => value.text.includes(searchWord))];
+        setActive(tempFilteredData[0] !== undefined ? tempFilteredData[0]._id : null);
     }
+
 
     return (
         <div className={`sidebar ${sidebarActive ? "activeComponent" : "false"}`}>
@@ -36,7 +33,7 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
             <div className="sidebar-header">
                 <label htmlFor="modal"><img src="https://yt3.ggpht.com/IpUd8bbQ8AFVis-r0ypfvHvB1t8KTJWLOsbBxWbYNH24e_WIwYNwURqa009GWBy56zCrn52dqAc=s900-c-k-c0x00ffffff-no-rj"/></label>
                 <div>My Notes</div>
-                <span className="material-icons" id="note_add" onClick={onAddNote}>note_add</span>
+                <span className="material-icons" id="note_add" onClick={() => {onAddNote(); document.getElementById("searchText").value = ""; setFilteredData([])}}>note_add</span>
             </div>
             <div className="search">
                 <span className="material-icons">search</span>

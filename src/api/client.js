@@ -1,8 +1,6 @@
 const defaultHeaders = {
     headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        /* "Access-Control-Allow-Origin" : "*", 
-        "Access-Control-Allow-Credentials" : true, */
     },
 }
 
@@ -23,7 +21,6 @@ export const createNoteAPIMethod = (note) => {
 }
 
 export const updateNoteAPIMethod = (note) => {
-    console.log("note: " + note);
     return fetch(`/api/notes/${note._id}`, {
         ...defaultHeaders,
         method: 'PUT', // The method defaults to GET
@@ -32,7 +29,6 @@ export const updateNoteAPIMethod = (note) => {
 }
 
 export const deleteNoteByIdAPIMethod = (noteId) => {
-    console.log("noteId: " + noteId);
     return fetch(`/api/notes/${noteId}`, {
         ...defaultHeaders,
         method: 'DELETE',

@@ -108,6 +108,7 @@ textArea {
   /* height: 550px; */
   height: 100vh;
   resize: none;
+  outline: none;
 }
 
 input[type="checkbox"] {

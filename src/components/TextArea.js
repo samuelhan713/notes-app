@@ -1,10 +1,7 @@
 import './Main.css';
 import { WithContext as ReactTags } from "react-tag-input";
-import { useEffect, useState, useCallback} from 'react';
-import {updateNoteAPIMethod, getNotesAPIMethod} from '../api/client';
-import {debounce} from 'lodash';
-
-
+import { useEffect, useState} from 'react';
+import {updateNoteAPIMethod} from '../api/client';
 
 function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleSwitch, notes, setNotes}) {
 
@@ -12,7 +9,6 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         if (notes.length === 0) {
             return
         }
-        console.log("use effect function in textarea.js");
         updateNoteAPIMethod(activeNote).then((notes) => {
           setNotes(notes);
           console.dir(notes);
@@ -22,53 +18,15 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
     const[tags, setTags] = useState(activeNote !== undefined ? activeNote.noteTags : []);
     const d = new Date();
 
-    /* function debounce(func, timeout = 1000) {
-        let timer;
-        return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => { func.apply(this, args); }, timeout);
-        }
-    } */
-
-    /*
-    function debounceEvent(...args) {
-        this.debouncedEvent = debounce(...args);
-        return e => {
-            e.persist();
-            return this.debouncedEvent(e);
-        }
-    }
-
-    const handleChange = (e) => {
-        onType("text", e);
-    };
-    
-    const onType = useCallback(debounce((field, value) => {
-        onEdit(
-            {
-                ...activeNote,
-                [field]:value,
-                date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
-                noteTags: activeNote.noteTags,
-            }
-        )
-        console.dir(activeNote);
-    }, 1000)); */
-
     const onType = (field, value) => {
         onEdit(
             {
                 ...activeNote,
+                lastUpdatedDate: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
                 [field]:value,
-                date: d.toISOString().slice(0,10).replace(/-/g,"/") + ", " + d.toISOString().slice(11,19).replace(/-/g,""),
-            }
+            },
         )
     };
-
-
-    /* const sort = () => {
-        setNotes([activeNote, ...notes.filter(item => item._id !== activeNote._id)]);
-    }  */
 
     const onNoteDelete = () => {
         handleNoteDelete(activeNote);
@@ -84,8 +42,6 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         activeNote.noteTags.push(tag);
         setTags(activeNote.noteTags);
         onType("noteTags", activeNote.noteTags);
-        console.log("activeNote.noteTags: ");
-        console.log(activeNote.noteTags);
     }
 
     const handleDrag = (tag, currPos, newPos) => {
@@ -94,7 +50,8 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         newTags.splice(newPos, 0, tag);
 
         activeNote.noteTags = [...newTags];
-        setTags(newTags);
+        setTags(activeNote.noteTags);
+        onType("noteTags", activeNote.noteTags);
     }
 
     const KeyCodes = {

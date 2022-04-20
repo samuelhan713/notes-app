@@ -9,9 +9,6 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 
-/* const bodyParser = require('body-parser');
-app.use(bodyParser.json()); */
-
 var dbURL = process.env.MONGO_URL || 'mongodb+srv://samuelhan:BON28qGBTQL8ZKfK@cluster0.iln76.mongodb.net/test'; // insert your database URL here
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
@@ -99,7 +96,6 @@ app.put('/api/notes/:id', async function (req,res) {
             }
         });
 });
-
 
 //USERS ---------------
 app.get('/api/users/:id', async function (req,res) {
