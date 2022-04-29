@@ -2,6 +2,7 @@ import './App.css';
 import TextArea from './components/TextArea';
 import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
+import LoginPage from './components/LoginPage';
 import React, {useState, useEffect} from "react";
 import {getNotesAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
 
@@ -87,16 +88,17 @@ function App() {
     });
   }
   
-  useEffect(() => {
+  /* useEffect(() => {
     getNotesAPIMethod().then((notes) => {
       setNotes(notes.reverse());
     })
   }, []);
-  sort();
+  sort(); */
 
   return (
     <div className='App'>
-        <SideBar 
+      <LoginPage/>
+        {/* <SideBar 
           notes={notes} 
           setNotes={setNotes} 
           onAddNote={onAddNote}
@@ -112,7 +114,7 @@ function App() {
           handleSwitch={handleSwitch} 
           notes={notes}
           setNotes={setNotes}/>
-        <Profile onSubmit={handleSubmit}/>
+        <Profile onSubmit={handleSubmit}/> */}
     </div>
   );
 }
