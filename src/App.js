@@ -88,12 +88,12 @@ function App() {
     });
   }
   
-  /* useEffect(() => {
+  useEffect(() => {
     getNotesAPIMethod().then((notes) => {
       setNotes(notes.reverse());
     })
   }, []);
-  sort(); */
+  sort();
 
   return (
     <div className='App'>
