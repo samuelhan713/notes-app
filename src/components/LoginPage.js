@@ -1,9 +1,16 @@
 import { useState } from 'react';
 import './Main.css';
+import { useHistory } from "react-router-dom";
+
 
 function LoginPage() {
 
     const [display, setDisplay] = useState(false);
+    let history = useHistory();
+    const routeChange = () => {
+        let path = '/notes';
+        history.push(path);
+    }
 
     return (
         <div className='login-page'>
@@ -19,7 +26,7 @@ function LoginPage() {
                         <input id='email' type='text'/>
                         <label htmlFor='password'>Password</label>
                         <input id='password' type='text'/>
-                        <button type='button' id='login-button'>Login</button>
+                        <button type='button' id='login-button' onClick={routeChange}>Login</button>
                         <hr/>
                         <div className='login-form-footer'>
                         <button type='button' id='create-account-btn' onClick={() => setDisplay(!display)}>Create New Account</button>

@@ -22,10 +22,10 @@ function wrapAsync(fn) {
 
 //NOTES
 //get all notes
-app.get('/api/notes', async function (req,res) {
+app.get('/api/notes', wrapAsync(async function (req,res) {
     const notes = await Note.find({});
     res.json(notes);
-});
+}));
 
 //get notes with specific ID
 app.get('/api/notes/:id', wrapAsync(async function (req,res, next) {
@@ -44,7 +44,7 @@ app.get('/api/notes/:id', wrapAsync(async function (req,res, next) {
 }));
 
 //create a new note
-app.post('/api/notes', async function(req, res) {
+app.post('/api/notes', wrapAsync(async function(req, res) {
     console.log("Posted with body: " + JSON.stringify(req.body));
 
     try {
@@ -58,10 +58,10 @@ app.post('/api/notes', async function(req, res) {
         console.log("Error on Post: " + error.message)
         res.status(400).send(error.message);
     }
-})
+}));
 
 //delete a note
-app.delete('/api/notes/:id', async function (req,res) {
+app.delete('/api/notes/:id', wrapAsync(async function (req,res) {
     const id = req.params.id;
     Note.findByIdAndDelete(id,
         null,
@@ -74,10 +74,10 @@ app.delete('/api/notes/:id', async function (req,res) {
                 res.json(result);
             }
         });
-});
+}));
 
 //update a note
-app.put('/api/notes/:id', async function (req,res) {
+app.put('/api/notes/:id', wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     Note.findByIdAndUpdate(id,
@@ -90,7 +90,7 @@ app.put('/api/notes/:id', async function (req,res) {
                 res.sendStatus(204);
             }
         });
-});
+}));
 
 //USERS ---------------
 app.get('/api/users/:id', async function (req,res) {
@@ -108,7 +108,7 @@ app.get('/api/users/:id', async function (req,res) {
     res.send("No user with id: " + id);
 });
 
-app.post('/api/users', async function (req,res) {
+app.post('/api/users', wrapAsync(async function (req,res) {
     console.log("Posted with body: " + JSON.stringify(req.body));
 
     try {
@@ -123,9 +123,9 @@ app.post('/api/users', async function (req,res) {
         console.log("Error on Post: " + error.message)
         res.status(400).send(error.message);
     }
-});
+}));
 
-app.put('/api/users/:id', async function (req,res) {
+app.put('/api/users/:id', wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     User.findByIdAndUpdate(id,
@@ -138,9 +138,9 @@ app.put('/api/users/:id', async function (req,res) {
                 res.sendStatus(204);
             }
         });
-});
+}));
 
-app.delete('/api/users/:id', async function (req,res) {
+app.delete('/api/users/:id', wrapAsync(async function (req,res) {
     const id = req.params.id;
     User.findByIdAndDelete(id,
         null,
@@ -153,7 +153,7 @@ app.delete('/api/users/:id', async function (req,res) {
                 res.json(result);
             }
         });
-});
+}));
 
 
 app.listen(port, () => {

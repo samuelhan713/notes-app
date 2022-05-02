@@ -3,8 +3,9 @@ import TextArea from './components/TextArea';
 import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 import LoginPage from './components/LoginPage';
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, Fragment} from "react";
 import {getNotesAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
+import {Route, Redirect, Switch, BrowserRouter} from 'react-router-dom';
 
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
   const [active, setActive] = useState(false);
   const [sidebarActive, setSideBarActive] = useState(false);
   const [textAreaActive, setTextAreaActive] = useState(true);
+  /* const {isLoggedIn, isAgent} = require('../middleware/auth'); */
+
   
 
   const onAddNote = async () => {
@@ -97,24 +100,34 @@ function App() {
 
   return (
     <div className='App'>
-      <LoginPage/>
-        {/* <SideBar 
-          notes={notes} 
-          setNotes={setNotes} 
-          onAddNote={onAddNote}
-          active={active} 
-          setActive={setActive} 
-          sidebarActive={sidebarActive} 
-          handleSwitch={handleSwitch}/>
-        <TextArea 
-          handleNoteDelete={handleDelete} 
-          activeNote={getActive()} 
-          onEdit={onEdit} 
-          textAreaActive={textAreaActive} 
-          handleSwitch={handleSwitch} 
-          notes={notes}
-          setNotes={setNotes}/>
-        <Profile onSubmit={handleSubmit}/> */}
+      <BrowserRouter>
+        <Switch>
+          <Route path='/login' component={LoginPage}/>
+          <Route path='/notes' render={ () => <Fragment>
+                                            <SideBar 
+                                              notes={notes} 
+                                              setNotes={setNotes} 
+                                              onAddNote={onAddNote}
+                                              active={active} 
+                                              setActive={setActive} 
+                                              sidebarActive={sidebarActive} 
+                                              handleSwitch={handleSwitch}/>
+                                            <TextArea 
+                                              handleNoteDelete={handleDelete} 
+                                              activeNote={getActive()} 
+                                              onEdit={onEdit} 
+                                              textAreaActive={textAreaActive} 
+                                              handleSwitch={handleSwitch} 
+                                              notes={notes}
+                                              setNotes={setNotes}/>
+                                            <Profile onSubmit={handleSubmit}/>
+                                        </Fragment>}/>
+          <Route exact path='/' render={() => {
+            <Redirect to='/login'/>
+          }}/>
+        </Switch>
+      </BrowserRouter>
+     
     </div>
   );
 }

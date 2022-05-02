@@ -9,10 +9,10 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         if (notes.length === 0) {
             return
         }
-        updateNoteAPIMethod(activeNote).then((notes) => {
+        /* updateNoteAPIMethod(activeNote).then((notes) => { ??????????????? do I need this
           setNotes(notes);
           console.dir(notes);
-        })
+        }) */
     }, []);
 
     const[tags, setTags] = useState(activeNote !== undefined ? activeNote.noteTags : []);
