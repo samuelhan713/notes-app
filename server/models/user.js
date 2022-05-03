@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const validator = require('../utils/validators');
 
 var Schema = mongoose.Schema;
 
@@ -11,12 +12,16 @@ var validateEmail = function(email) {
 
 var UserSchema = new Schema(
     {
-        name: {type: String},
+        name: {type: String, required: true},
         email: {
             type: String,
             trim: true,
-            validate: [validateEmail, 'Please fill a valid email address.'],
-            match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+            unique: true,
+            required: true,
+            validate: {
+                validator: validator.validateEmail,
+                message: props => `${props.value} is not a valid email!`
+            },
         }, //have at least 1 character before an @symbol followed by a domain name
         password: {
             type: String,

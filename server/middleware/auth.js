@@ -1,5 +1,11 @@
 const User = require('../models/user');
-const {wrapAsync} = require('../server');
+/* const {wrapAsync} = require('../server'); */
+
+function wrapAsync(fn) {
+    return function (req, res, next) {
+        fn(req, res, next).catch(e => next(e))
+    }
+}
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.session.userId) {

@@ -3,6 +3,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Note = require('./models/note');
 const User = require('./models/user');
+const MongoStore = require('connect-mongo'); // MongoDB session store
+const session = require('express-session');
+const {isLoggedIn, isAgent} = require('./middleware/auth');
+
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -14,6 +18,35 @@ mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+
+const sessionSecret = 'make a secret string';
+
+const store = MongoStore.create({
+    mongoUrl: dbURL,
+    secret: sessionSecret,
+    touchAfter: 24 * 60 * 60
+})
+
+/* mongoose.set('useFindAndModify', false); */
+
+// Setup to use the express-session package
+const sessionConfig = {
+    store,
+    name: 'session',
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+        // later you would want to add: 'secure: true' once your website is hosted on HTTPS.
+    }
+}
+
+app.use(session(sessionConfig));
+
+
 function wrapAsync(fn) {
     return function (req, res, next) {
         fn(req, res, next).catch(e => next(e))
@@ -22,13 +55,13 @@ function wrapAsync(fn) {
 
 //NOTES
 //get all notes
-app.get('/api/notes', wrapAsync(async function (req,res) {
+app.get('/api/notes', isLoggedIn, wrapAsync(async function (req,res) {
     const notes = await Note.find({});
     res.json(notes);
 }));
 
 //get notes with specific ID
-app.get('/api/notes/:id', wrapAsync(async function (req,res, next) {
+app.get('/api/notes/:id', isAgent, wrapAsync(async function (req,res, next) {
     let id = req.params.id;
     if (mongoose.isValidObjectId(id)) {
         const note = await Note.findById(id);
@@ -44,13 +77,14 @@ app.get('/api/notes/:id', wrapAsync(async function (req,res, next) {
 }));
 
 //create a new note
-app.post('/api/notes', wrapAsync(async function(req, res) {
+app.post('/api/notes', isAgent, wrapAsync(async function(req, res) { 
     console.log("Posted with body: " + JSON.stringify(req.body));
 
     try {
         const newNote = new Note({
             text: req.body.text,
-            lastUpdatedDate: req.body.lastUpdatedDate ,
+            lastUpdatedDate: req.body.lastUpdatedDate,
+            agent: req.session.userId, //??????
         })
         await newNote.save();
         res.json(newNote);
@@ -61,7 +95,7 @@ app.post('/api/notes', wrapAsync(async function(req, res) {
 }));
 
 //delete a note
-app.delete('/api/notes/:id', wrapAsync(async function (req,res) {
+app.delete('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
     const id = req.params.id;
     Note.findByIdAndDelete(id,
         null,
@@ -77,7 +111,7 @@ app.delete('/api/notes/:id', wrapAsync(async function (req,res) {
 }));
 
 //update a note
-app.put('/api/notes/:id', wrapAsync(async function (req,res) {
+app.put('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     Note.findByIdAndUpdate(id,
@@ -89,10 +123,43 @@ app.put('/api/notes/:id', wrapAsync(async function (req,res) {
             } else {
                 res.sendStatus(204);
             }
-        });
+        }, {runValidators: true});
 }));
 
+
+
+
 //USERS ---------------
+
+
+app.post('/api/register', wrapAsync(async function (req, res) {
+    const {password, email, name} = req.body;
+    const user = new User({email, password, name})
+    await user.save();
+    req.session.userId = user._id;
+    // Note: this is returning the entire user object to demo, which will include the hashed and salted password.
+    // In practice, you wouldn't typically do this – a success status would suffice, or perhaps just the user id.
+    res.json(user);
+}));
+
+app.post('/api/login', wrapAsync(async function (req, res) {
+    const {password, email} = req.body;
+    const user = await User.findAndValidate(email, password);
+    if (user) {
+        req.session.userId = user._id;
+        res.sendStatus(204);
+    } else {
+        res.sendStatus(401);
+    }
+}));
+
+app.post('/api/logout', wrapAsync(async function (req, res) {
+    req.session.userId = null;
+    res.sendStatus(204);
+}));
+
+
+
 app.get('/api/users/:id', async function (req,res) {
     let id = req.params.id;
     if( mongoose.isValidObjectId(id) ) {
@@ -137,7 +204,7 @@ app.put('/api/users/:id', wrapAsync(async function (req,res) {
             } else {
                 res.sendStatus(204);
             }
-        });
+        }, {runValidators: true});
 }));
 
 app.delete('/api/users/:id', wrapAsync(async function (req,res) {
