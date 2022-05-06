@@ -60,7 +60,7 @@ export const getUserByIdAPIMethod = (userId) => {
 }
 
 export const createUserAPIMethod = (user) => {
-    return fetch(`/api/users`, {
+    return fetch(`/api/register`, {
         ...defaultHeaders,
         method: 'POST', 
         body: JSON.stringify(user),

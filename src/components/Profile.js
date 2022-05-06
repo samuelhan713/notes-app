@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react';
 import './Main.css';
 import {getUserByIdAPIMethod} from '../api/client';
+import {useParams} from "react-router";
 
 
 function Profile(props) {
     const [user, setUser] = useState(props.user || {});
+    let {userId} = useParams();
 
     useEffect(() => {
-        getUserByIdAPIMethod("625db9a7c12ffa9604bd0e3f").then((user) => {
+        /* getUserByIdAPIMethod("625db9a7c12ffa9604bd0e3f").then((user) => {
             setUser(user);
+        }) */
+        getUserByIdAPIMethod(userId).then((user) => {
+            setUser(user);
+        }).catch(err => {
+            console.log("no user");
         })
     }, []);
 

@@ -9,7 +9,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         if (notes.length === 0) {
             return
         }
-        /* updateNoteAPIMethod(activeNote).then((notes) => { ??????????????? do I need this
+        /* updateNoteAPIMethod(activeNote).then((notes) => { ??????????????? do I need
           setNotes(notes);
           console.dir(notes);
         }) */

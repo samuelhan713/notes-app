@@ -4,7 +4,7 @@ import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 import LoginPage from './components/LoginPage';
 import React, {useState, useEffect, Fragment} from "react";
-import {getNotesAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
+import {createUserAPIMethod, getNotesAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
 import {Route, Redirect, Switch, BrowserRouter} from 'react-router-dom';
 
 
@@ -17,7 +17,7 @@ function App() {
   const [active, setActive] = useState(false);
   const [sidebarActive, setSideBarActive] = useState(false);
   const [textAreaActive, setTextAreaActive] = useState(true);
-  /* const {isLoggedIn, isAgent} = require('../middleware/auth'); */
+  const [errorMessage, setErrorMessage] = useState(null);
 
   
 
@@ -90,6 +90,15 @@ function App() {
       return new Date(b.lastUpdatedDate) - new Date(a.lastUpdatedDate);
     });
   }
+
+  const onRegister = (user) => {
+    setErrorMessage(null);
+    createUserAPIMethod(user).catch(err => {
+      console.log("invalid brother");
+      setErrorMessage("Invalid email and/or password");
+    });
+  }
+
   
   useEffect(() => {
     getNotesAPIMethod().then((notes) => {
@@ -102,7 +111,10 @@ function App() {
     <div className='App'>
       <BrowserRouter>
         <Switch>
-          <Route path='/login' component={LoginPage}/>
+          <Route path='/loginPage' render={() => <LoginPage 
+                                                    onRegister={onRegister}
+                                                    errorMessage={errorMessage}
+                                                    setErrorMessage={setErrorMessage}/>}/>
           <Route path='/notes' render={ () => <Fragment>
                                             <SideBar 
                                               notes={notes} 
@@ -123,7 +135,7 @@ function App() {
                                             <Profile onSubmit={handleSubmit}/>
                                         </Fragment>}/>
           <Route exact path='/' render={() => {
-            <Redirect to='/login'/>
+            <Redirect to='/loginPage'/>
           }}/>
         </Switch>
       </BrowserRouter>

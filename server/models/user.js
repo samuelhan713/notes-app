@@ -28,7 +28,7 @@ var UserSchema = new Schema(
             required: true,
             minlength: 6,
         },
-        profileImage: {type: String},
+        profileImageUrl: {type: String},
         colorScheme: {type: String},
     }
 );

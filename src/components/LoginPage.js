@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Main.css';
 import { useHistory } from "react-router-dom";
 import {useParams} from "react-router";
-import { getNoteByIdAPIMethod, getNotesAPIMethod } from '../api/client';
+import { createUserAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod } from '../api/client';
 
 
-function LoginPage() {
+function LoginPage({onRegister, errorMessage, setErrorMessage}) {
 
     /* let {noteId} = useParams(); */
     const [display, setDisplay] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     /* const [authorized, setAuthorized] = useState(true); */
     /* const [note, setNote] = useState(null); */
     let history = useHistory();
@@ -18,11 +20,19 @@ function LoginPage() {
         history.push(path);
     }
 
-    const handleSubmit = (e) => {
-
-        setErrorMessage("Enter something valid");
+    const handleLogin = (e) => {
+        setErrorMessage("not valid");
         console.log("handle submit!");
     }
+
+    const handleRegister = (name, email, password) => {
+        const profileImageUrl = "url";
+        const colorScheme = "light";
+        const user = {name, email, password, profileImageUrl, colorScheme};
+        onRegister(user);
+    }
+
+    
 
 
     /* useEffect(() => {
@@ -57,8 +67,8 @@ function LoginPage() {
                             <input id='email' type='text'/>
                             <label htmlFor='password'>Password</label>
                             <input id='password' type='text'/>
-                            <div style={{color: 'red'}}>{errorMessage}</div>
-                            <button type='button' id='login-button' onClick={handleSubmit}/* onClick={routeChange} */>Login</button>
+                            {/* <div style={{color: 'red'}}>{errorMessage}</div> */}
+                            <button type='button' id='login-button' onClick={handleLogin}/* onClick={routeChange} */>Login</button>
                             <hr/>
                             <div className='login-form-footer'>
                                 <button type='button' id='create-account-btn'onClick={() => setDisplay(!display)}>Create New Account</button>
@@ -70,7 +80,7 @@ function LoginPage() {
             </div>
             {display && (
                 <div className='create-new-account-background'>
-                    <form>
+                    {/* <form> */}
                         <div className='create-new-account-modal'>
                             <div className='inner-modal'>
                                 <div className='create-new-account-modal-header'>
@@ -78,17 +88,18 @@ function LoginPage() {
                                     <span className="material-icons" id="signup-close" onClick={() => setDisplay(!display)}>close</span>
                                 </div>
                                 <label htmlFor="signup-name">Name</label>
-                                <input type="text" name="name" id="signup-name"/>
+                                <input type="text" name="name" id="signup-name" onChange={e => setName(e.target.value)}/>
                                 <label htmlFor="signup-email">Email</label>
-                                <input type="text" name="email" id="signup-email"/>
+                                <input type="text" name="email" id="signup-email" onChange={e => setEmail(e.target.value)}/>
                                 <label htmlFor="signup-password">Password</label>
-                                <input type="text" name="password" id="signup-password"/>
+                                <input type="text" name="password" id="signup-password" onChange={e => setPassword(e.target.value)}/>
+                                <div style={{color: 'red'}}>{errorMessage}</div>
                                 <div className='create-new-account-modal-footer'>
-                                    <input type="submit" value="Sign up" className="signup"/>
+                                    <button onClick={() => handleRegister(name, email, password)} className="signup">Sign up</button>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    {/* </form> */}
                 </div>
             )}
         </div>

@@ -61,7 +61,7 @@ app.get('/api/notes', isLoggedIn, wrapAsync(async function (req,res) {
 }));
 
 //get notes with specific ID
-app.get('/api/notes/:id', isAgent, wrapAsync(async function (req,res, next) {
+app.get('/api/notes/:id', /* isAgent, */ wrapAsync(async function (req,res, next) {
     let id = req.params.id;
     if (mongoose.isValidObjectId(id)) {
         const note = await Note.findById(id);
@@ -77,7 +77,7 @@ app.get('/api/notes/:id', isAgent, wrapAsync(async function (req,res, next) {
 }));
 
 //create a new note
-app.post('/api/notes', isAgent, wrapAsync(async function(req, res) { 
+app.post('/api/notes', /* isAgent, */ wrapAsync(async function(req, res) { 
     console.log("Posted with body: " + JSON.stringify(req.body));
 
     try {
@@ -95,7 +95,7 @@ app.post('/api/notes', isAgent, wrapAsync(async function(req, res) {
 }));
 
 //delete a note
-app.delete('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
+app.delete('/api/notes/:id', /* isAgent, */ wrapAsync(async function (req,res) {
     const id = req.params.id;
     Note.findByIdAndDelete(id,
         null,
@@ -111,7 +111,7 @@ app.delete('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
 }));
 
 //update a note
-app.put('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
+app.put('/api/notes/:id', /* isAgent, */ wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     Note.findByIdAndUpdate(id,
@@ -133,8 +133,8 @@ app.put('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
 
 
 app.post('/api/register', wrapAsync(async function (req, res) {
-    const {password, email, name} = req.body;
-    const user = new User({email, password, name})
+    const {password, email, name, profileImageUrl, colorScheme} = req.body;
+    const user = new User({email, password, name, profileImageUrl, colorScheme})
     await user.save();
     req.session.userId = user._id;
     // Note: this is returning the entire user object to demo, which will include the hashed and salted password.
@@ -149,6 +149,7 @@ app.post('/api/login', wrapAsync(async function (req, res) {
         req.session.userId = user._id;
         res.sendStatus(204);
     } else {
+        console.log('You shall not pass');
         res.sendStatus(401);
     }
 }));
@@ -182,6 +183,8 @@ app.post('/api/users', wrapAsync(async function (req,res) {
         const newUser = new User({
             name: req.body.name,
             email: req.body.email,
+            password: req.body.password,
+            profileImageUrl: req.body.profileImageUrl,
             colorScheme: req.body.colorScheme,
         })
         await newUser.save();
@@ -221,6 +224,21 @@ app.delete('/api/users/:id', wrapAsync(async function (req,res) {
             }
         });
 }));
+
+app.use((err, req, res, next) => {
+    console.log("Error handling called " + err);
+    // If want to print out the error stack, uncomment below
+    // console.error(err.stack)
+    // Updating the statusMessage with our custom error message (otherwise it will have a default for the status code).
+    res.statusMessage = err.message;
+
+    if (err.name === 'ValidationError') {
+        res.status(400).end();
+    } else {
+        // We could further interpret the errors to send a specific status based more error types.
+        res.status(500).end();
+    }
+})
 
 
 app.listen(port, () => {
