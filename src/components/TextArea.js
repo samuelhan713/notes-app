@@ -6,13 +6,13 @@ import {updateNoteAPIMethod} from '../api/client';
 function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleSwitch, notes, setNotes}) {
 
     useEffect(() => {
-        if (notes.length === 0) {
+        if (notes.length === 0 || activeNote !== null) {
             return
         }
-        /* updateNoteAPIMethod(activeNote).then((notes) => { ??????????????? do I need
+        updateNoteAPIMethod(activeNote).then((notes) => { //??????????????? do I need
           setNotes(notes);
           console.dir(notes);
-        }) */
+        })
     }, []);
 
     const[tags, setTags] = useState(activeNote !== undefined ? activeNote.noteTags : []);

@@ -39,6 +39,7 @@ UserSchema.statics.findAndValidate = async function (email, password) {
         return false;
     }
     const isValid = await bcrypt.compare(password, user.password);
+    console.dir(user);
     return isValid ? user : false;
 }
 

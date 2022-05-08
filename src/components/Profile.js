@@ -15,6 +15,7 @@ function Profile(props) {
         getUserByIdAPIMethod(userId).then((user) => {
             setUser(user);
         }).catch(err => {
+            console.dir(user);
             console.log("no user");
         })
     }, []);

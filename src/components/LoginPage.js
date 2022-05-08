@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import './Main.css';
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import {useParams} from "react-router";
-import { createUserAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod } from '../api/client';
+import { createUserAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod, getUsersAPIMethod } from '../api/client';
 
 
 function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorMessage, loginErrorMessage, setLoginErrorMessage}) {
@@ -14,8 +14,10 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
     const [registerPassword, setRegisterPassword] = useState('');
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
+    const [users, setUsers] = useState([]);
     /* const [authorized, setAuthorized] = useState(true); */
     /* const [note, setNote] = useState(null); */
+    const test = true;
     let history = useHistory();
     const routeChange = () => {
         let path = '/notes';
@@ -23,8 +25,12 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
     }
 
     const handleLogin = (email, password) => {
-        const user = {"name": "", "password": password, "email": email, "profileImageUrl": "", "colorScheme": "light"};
+        const user = {"_id": "", "name": "", "password": password, "email": email, "profileImageUrl": "", "colorScheme": "light"};
+        console.log("login error message");
         onLogin(user);
+        if (test) {
+            routeChange();
+        }
     }
 
     const handleRegister = (name, email, password) => {
@@ -35,22 +41,12 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
     }
 
 
-    /* useEffect(() => {
-        // Note: need to place this in an async function to be able to catch the error
-        function fetchData() {
-            getNoteByIdAPIMethod(noteId).then((theNote) => {
-                setNote(theNote);
-                console.dir(theNote);
-            }).catch((err) => {
-                console.error('Error retrieving note data: ' + err);
-                setAuthorized(false);
-                // Could set state to show an error message to the user
-                // Alternatively could redirect to an error page, such as with:
-                // history.push('/error');
-            });
-        };
-        fetchData();
-    }, [noteId]); */
+    useEffect(() => {
+        getUsersAPIMethod().then((users) => {
+            setUsers(users);
+            console.log("getting all users");
+        })
+    }, []);
 
     return (
         <div className='login-page'>
@@ -69,6 +65,7 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
                             <input id='password' type='text' onChange={e => setLoginPassword(e.target.value)}/>
                             <div style={{color: 'red'}}>{loginErrorMessage}</div>
                             <button type='button' id='login-button' onClick={() => handleLogin(loginEmail, loginPassword)}/* onClick={routeChange} */>Login</button>
+                            {/* <Link to={"/notes/" + ""}>link</Link> */}
                             <hr/>
                             <div className='login-form-footer'>
                                 <button type='button' id='create-account-btn'onClick={() => setDisplay(!display)}>Create New Account</button>

@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
+const date = new Date();
+
 var NoteSchema = new Schema(
     {
         text: {type: String},

@@ -1,16 +1,27 @@
 import './Main.css';
 import useWindowDimensions from '../windowResize';
 import {useState, useEffect} from "react";
-import {getNotesAPIMethod} from '../api/client';
+import {getNotesAPIMethod, getUserNotesAPIMethod} from '../api/client';
+import {useParams} from "react-router";
+
 function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
     const { width, height } = useWindowDimensions();
     const [filteredData, setFilteredData] = useState([]);
+    const userId = useParams();
+    console.dir(userId.userId);
 
-    useEffect(() => {
+    /* useEffect(() => {
         getNotesAPIMethod().then((notes) => {
           setNotes(notes);
           console.dir(notes);
         })
+      }, []); */
+      useEffect(() => {
+          console.log("userId: " + userId.userId);
+          getUserNotesAPIMethod(userId.userId).then((notes) => {
+              setNotes(notes);
+              console.dir(notes);
+          })
       }, []);
 
     const handleFilter = (e) => {

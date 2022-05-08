@@ -4,8 +4,9 @@ import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 import LoginPage from './components/LoginPage';
 import React, {useState, useEffect, Fragment} from "react";
-import {createUserAPIMethod, getNotesAPIMethod, getUsersAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
+import {createUserAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod, getUserNotesAPIMethod, loginAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
 import {Route, Redirect, Switch, BrowserRouter, useHistory} from 'react-router-dom';
+import {useParams} from "react-router";
 
 
 function App() {
@@ -18,6 +19,9 @@ function App() {
   const [textAreaActive, setTextAreaActive] = useState(true);
   const [registerErrorMessage, setRegisterErrorMessage] = useState(null);
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
+
+  /* const [userId, setUserId] = useState(''); */
+  let uId = '';
   const history = useHistory();
 
   const routeChange = () => {
@@ -63,7 +67,8 @@ function App() {
   const onEdit = (updatedNote) => {
     updateNoteAPIMethod(updatedNote).then((response) => {
       console.log("Updated note on the server");
-    }) 
+    })
+    console.log("GOES THROUGH");
     var newArray = notes.map(note => {
       if (note._id === updatedNote._id) {
         return updatedNote;
@@ -105,24 +110,49 @@ function App() {
 
 
   const onLogin = (user) => {
+    const loggedIn = true;
     setLoginErrorMessage(null);
-    console.dir(user);
-    getUsersAPIMethod(user, (response) => {console.dir(response);}).catch(err => {
+    loginAPIMethod(user, (response) => {console.dir(response);}).catch(err => {
       setLoginErrorMessage("Error: Invalid email and/or password");
-      return;
     });
-    //redirect to notes page (not working?)
+
+    console.dir(user);
+    /* setUserId(user._id); */
+    uId = user._id;
+    /* console.log("user's ID: " + user._id); */
+    //redirect to notes page (not working)
     /* routeChange(); */
 
   }
 
   
-  useEffect(() => {
+  /* useEffect(() => {
     getNotesAPIMethod().then((notes) => {
       setNotes(notes.reverse());
     })
+  }, []); */
+  /* useEffect(() => {
+    getUserNotesAPIMethod(uId).then((notes) => {
+      setNotes(notes.reverse());
+    })
   }, []);
-  sort();
+  sort(); */
+  /* useEffect(() => {
+        // Note: need to place this in an async function to be able to catch the error
+        function fetchData() {
+            getNoteByIdAPIMethod(noteId).then((theNote) => {
+                setNote(theNote);
+                console.dir(theNote);
+            }).catch((err) => {
+                console.error('Error retrieving note data: ' + err);
+                setAuthorized(false);
+                // Could set state to show an error message to the user
+                // Alternatively could redirect to an error page, such as with:
+                // history.push('/error');
+            });
+        };
+        fetchData();
+    }, [noteId]); */
 
   return (
     <div className='App'>
@@ -135,31 +165,30 @@ function App() {
                                                     setRegisterErrorMessage={setRegisterErrorMessage}
                                                     loginErrorMessage={loginErrorMessage}
                                                     setLoginErrorMessage={setLoginErrorMessage}/>}/>
-          <Route path='/notes' render={ () => <Fragment>
-                                            <SideBar 
-                                              notes={notes} 
-                                              setNotes={setNotes} 
-                                              onAddNote={onAddNote}
-                                              active={active} 
-                                              setActive={setActive} 
-                                              sidebarActive={sidebarActive} 
-                                              handleSwitch={handleSwitch}/>
-                                            <TextArea 
-                                              handleNoteDelete={handleDelete} 
-                                              activeNote={getActive()} 
-                                              onEdit={onEdit} 
-                                              textAreaActive={textAreaActive} 
-                                              handleSwitch={handleSwitch} 
-                                              notes={notes}
-                                              setNotes={setNotes}/>
-                                            <Profile onSubmit={handleSubmit}/>
-                                        </Fragment>}/>
+          <Route path='/notes/:userId' render={ () => <Fragment>
+                                                <SideBar 
+                                                  notes={notes} 
+                                                  setNotes={setNotes} 
+                                                  onAddNote={onAddNote}
+                                                  active={active} 
+                                                  setActive={setActive} 
+                                                  sidebarActive={sidebarActive} 
+                                                  handleSwitch={handleSwitch}/>
+                                                <TextArea 
+                                                  handleNoteDelete={handleDelete} 
+                                                  activeNote={getActive()} 
+                                                  onEdit={onEdit} 
+                                                  textAreaActive={textAreaActive} 
+                                                  handleSwitch={handleSwitch} 
+                                                  notes={notes}
+                                                  setNotes={setNotes}/>
+                                                <Profile onSubmit={handleSubmit}/>
+                                              </Fragment>}/>
           <Route exact path='/' render={() => {
             <Redirect to='/loginPage'/>
           }}/>
         </Switch>
       </BrowserRouter>
-     
     </div>
   );
 }

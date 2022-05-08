@@ -60,7 +60,13 @@ app.get('/api/notes', isLoggedIn, wrapAsync(async function (req,res) {
     res.json(notes);
 }));
 
-//get notes with specific ID
+app.get('/api/notes/:userId', isLoggedIn, wrapAsync(async function (req, res) {
+    let userId = req.params.userId;
+    const notes = await Note.find({agent: userId});
+    res.json(notes);
+}))
+
+//get note with specific ID
 app.get('/api/notes/:id', isAgent, wrapAsync(async function (req,res, next) {
     let id = req.params.id;
     if (mongoose.isValidObjectId(id)) {
@@ -143,7 +149,6 @@ app.post('/api/register', wrapAsync(async function (req, res) {
 }));
 
 app.post('/api/login', wrapAsync(async function (req, res) {
-    console.log("WORKING");
     const {password, email} = req.body;
     const user = await User.findAndValidate(email, password);
     if (user) {
@@ -161,7 +166,11 @@ app.post('/api/logout', wrapAsync(async function (req, res) {
     res.sendStatus(204);
 }));
 
-
+//get all users
+app.get('/api/users', async function (req, res) {
+    const users = await User.find({});
+    res.json(users);
+})
 
 app.get('/api/users/:id', async function (req,res) {
     let id = req.params.id;
