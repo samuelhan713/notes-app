@@ -45,11 +45,19 @@ export const getNoteByIdAPIMethod = (noteId) => {
 
 
 //USERS
-export const getUsersAPIMethod = () => {
+/* export const getUsersAPIMethod = () => {
     return fetch(`/api/users`, {
         ...defaultHeaders,
     }).then(checkStatus)
         .then(parseJSON);
+} */
+export const getUsersAPIMethod = (user) => {
+    return fetch(`/api/login`, {
+        ...defaultHeaders,
+        method: 'POST',
+        body: JSON.stringify(user)
+    }).then(checkStatus)
+        /* .then(parseJSON) */;
 }
 
 export const getUserByIdAPIMethod = (userId) => {

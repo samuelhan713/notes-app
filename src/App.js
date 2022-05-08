@@ -4,8 +4,8 @@ import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 import LoginPage from './components/LoginPage';
 import React, {useState, useEffect, Fragment} from "react";
-import {createUserAPIMethod, getNotesAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
-import {Route, Redirect, Switch, BrowserRouter} from 'react-router-dom';
+import {createUserAPIMethod, getNotesAPIMethod, getUsersAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
+import {Route, Redirect, Switch, BrowserRouter, useHistory} from 'react-router-dom';
 
 
 function App() {
@@ -13,13 +13,17 @@ function App() {
   
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
-
   const [active, setActive] = useState(false);
   const [sidebarActive, setSideBarActive] = useState(false);
   const [textAreaActive, setTextAreaActive] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [registerErrorMessage, setRegisterErrorMessage] = useState(null);
+  const [loginErrorMessage, setLoginErrorMessage] = useState(null);
+  const history = useHistory();
 
-  
+  const routeChange = () => {
+    let path = "/notes";
+    history.push(path);
+  }
 
   const onAddNote = async () => {
     const data = await fetch("/api/notes", {
@@ -92,11 +96,24 @@ function App() {
   }
 
   const onRegister = (user) => {
-    setErrorMessage(null);
+    setRegisterErrorMessage(null);
     createUserAPIMethod(user).catch(err => {
-      console.log("invalid brother");
-      setErrorMessage("Invalid email and/or password");
+      console.log("invalid register");
+      setRegisterErrorMessage("Invalid email and/or password");
     });
+  }
+
+
+  const onLogin = (user) => {
+    setLoginErrorMessage(null);
+    console.dir(user);
+    getUsersAPIMethod(user, (response) => {console.dir(response);}).catch(err => {
+      setLoginErrorMessage("Error: Invalid email and/or password");
+      return;
+    });
+    //redirect to notes page (not working?)
+    /* routeChange(); */
+
   }
 
   
@@ -113,8 +130,11 @@ function App() {
         <Switch>
           <Route path='/loginPage' render={() => <LoginPage 
                                                     onRegister={onRegister}
-                                                    errorMessage={errorMessage}
-                                                    setErrorMessage={setErrorMessage}/>}/>
+                                                    onLogin={onLogin}
+                                                    registerErrorMessage={registerErrorMessage}
+                                                    setRegisterErrorMessage={setRegisterErrorMessage}
+                                                    loginErrorMessage={loginErrorMessage}
+                                                    setLoginErrorMessage={setLoginErrorMessage}/>}/>
           <Route path='/notes' render={ () => <Fragment>
                                             <SideBar 
                                               notes={notes} 

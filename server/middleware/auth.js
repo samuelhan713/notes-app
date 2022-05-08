@@ -1,3 +1,4 @@
+const Note = require('../models/note');
 const User = require('../models/user');
 /* const {wrapAsync} = require('../server'); */
 
@@ -16,10 +17,11 @@ module.exports.isLoggedIn = (req, res, next) => {
 
 module.exports.isAgent = wrapAsync(async (req, res, next) => {
     const id = req.params.id;
-    const user = await User.findById(id);
-    if (user.agent && !user.agent.equals(req.session.userId)) {
+    const note = await Note.findById(id);
+    if (Note.agent && !Note.agent.equals(req.session.noteId)) {
         /* throw new ExpressError("Not an authorized agent for this author", 401); */
         throw new Error("Invalid email and/or password");
     }
+    console.log("end of isAgent");
     next();
 });

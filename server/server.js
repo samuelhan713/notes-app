@@ -61,7 +61,7 @@ app.get('/api/notes', isLoggedIn, wrapAsync(async function (req,res) {
 }));
 
 //get notes with specific ID
-app.get('/api/notes/:id', /* isAgent, */ wrapAsync(async function (req,res, next) {
+app.get('/api/notes/:id', isAgent, wrapAsync(async function (req,res, next) {
     let id = req.params.id;
     if (mongoose.isValidObjectId(id)) {
         const note = await Note.findById(id);
@@ -77,7 +77,7 @@ app.get('/api/notes/:id', /* isAgent, */ wrapAsync(async function (req,res, next
 }));
 
 //create a new note
-app.post('/api/notes', /* isAgent, */ wrapAsync(async function(req, res) { 
+app.post('/api/notes', isAgent, wrapAsync(async function(req, res) { 
     console.log("Posted with body: " + JSON.stringify(req.body));
 
     try {
@@ -95,7 +95,7 @@ app.post('/api/notes', /* isAgent, */ wrapAsync(async function(req, res) {
 }));
 
 //delete a note
-app.delete('/api/notes/:id', /* isAgent, */ wrapAsync(async function (req,res) {
+app.delete('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
     const id = req.params.id;
     Note.findByIdAndDelete(id,
         null,
@@ -111,7 +111,7 @@ app.delete('/api/notes/:id', /* isAgent, */ wrapAsync(async function (req,res) {
 }));
 
 //update a note
-app.put('/api/notes/:id', /* isAgent, */ wrapAsync(async function (req,res) {
+app.put('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     Note.findByIdAndUpdate(id,
@@ -143,9 +143,11 @@ app.post('/api/register', wrapAsync(async function (req, res) {
 }));
 
 app.post('/api/login', wrapAsync(async function (req, res) {
+    console.log("WORKING");
     const {password, email} = req.body;
     const user = await User.findAndValidate(email, password);
     if (user) {
+        console.log("login success");
         req.session.userId = user._id;
         res.sendStatus(204);
     } else {

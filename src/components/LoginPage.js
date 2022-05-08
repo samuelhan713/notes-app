@@ -5,13 +5,15 @@ import {useParams} from "react-router";
 import { createUserAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod } from '../api/client';
 
 
-function LoginPage({onRegister, errorMessage, setErrorMessage}) {
+function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorMessage, loginErrorMessage, setLoginErrorMessage}) {
 
     /* let {noteId} = useParams(); */
     const [display, setDisplay] = useState(false);
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [registerName, setRegisterName] = useState('');
+    const [registerEmail, setRegisterEmail] = useState('');
+    const [registerPassword, setRegisterPassword] = useState('');
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
     /* const [authorized, setAuthorized] = useState(true); */
     /* const [note, setNote] = useState(null); */
     let history = useHistory();
@@ -20,9 +22,9 @@ function LoginPage({onRegister, errorMessage, setErrorMessage}) {
         history.push(path);
     }
 
-    const handleLogin = (e) => {
-        setErrorMessage("not valid");
-        console.log("handle submit!");
+    const handleLogin = (email, password) => {
+        const user = {"name": "", "password": password, "email": email, "profileImageUrl": "", "colorScheme": "light"};
+        onLogin(user);
     }
 
     const handleRegister = (name, email, password) => {
@@ -31,8 +33,6 @@ function LoginPage({onRegister, errorMessage, setErrorMessage}) {
         const user = {name, email, password, profileImageUrl, colorScheme};
         onRegister(user);
     }
-
-    
 
 
     /* useEffect(() => {
@@ -64,11 +64,11 @@ function LoginPage({onRegister, errorMessage, setErrorMessage}) {
                     <div className='login-innerContainer'>
                         <form>
                             <label htmlFor='email'>Email</label>
-                            <input id='email' type='text'/>
+                            <input id='email' type='text' onChange={e => setLoginEmail(e.target.value)}/>
                             <label htmlFor='password'>Password</label>
-                            <input id='password' type='text'/>
-                            {/* <div style={{color: 'red'}}>{errorMessage}</div> */}
-                            <button type='button' id='login-button' onClick={handleLogin}/* onClick={routeChange} */>Login</button>
+                            <input id='password' type='text' onChange={e => setLoginPassword(e.target.value)}/>
+                            <div style={{color: 'red'}}>{loginErrorMessage}</div>
+                            <button type='button' id='login-button' onClick={() => handleLogin(loginEmail, loginPassword)}/* onClick={routeChange} */>Login</button>
                             <hr/>
                             <div className='login-form-footer'>
                                 <button type='button' id='create-account-btn'onClick={() => setDisplay(!display)}>Create New Account</button>
@@ -88,14 +88,14 @@ function LoginPage({onRegister, errorMessage, setErrorMessage}) {
                                     <span className="material-icons" id="signup-close" onClick={() => setDisplay(!display)}>close</span>
                                 </div>
                                 <label htmlFor="signup-name">Name</label>
-                                <input type="text" name="name" id="signup-name" onChange={e => setName(e.target.value)}/>
+                                <input type="text" name="name" id="signup-name" onChange={e => setRegisterName(e.target.value)}/>
                                 <label htmlFor="signup-email">Email</label>
-                                <input type="text" name="email" id="signup-email" onChange={e => setEmail(e.target.value)}/>
+                                <input type="text" name="email" id="signup-email" onChange={e => setRegisterEmail(e.target.value)}/>
                                 <label htmlFor="signup-password">Password</label>
-                                <input type="text" name="password" id="signup-password" onChange={e => setPassword(e.target.value)}/>
-                                <div style={{color: 'red'}}>{errorMessage}</div>
+                                <input type="text" name="password" id="signup-password" onChange={e => setRegisterPassword(e.target.value)}/>
+                                <div style={{color: 'red'}}>{registerErrorMessage}</div>
                                 <div className='create-new-account-modal-footer'>
-                                    <button onClick={() => handleRegister(name, email, password)} className="signup">Sign up</button>
+                                    <button onClick={() => handleRegister(registerName, registerEmail, registerPassword)} className="signup">Sign up</button>
                                 </div>
                             </div>
                         </div>
