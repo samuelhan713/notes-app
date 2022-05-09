@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import './Main.css';
-import {getUserByIdAPIMethod, getUsersAPIMethod, uploadImageToCloudinaryAPIMethod} from '../api/client';
+import {getUserByIdAPIMethod, getUsersAPIMethod, logoutAPIMethod, uploadImageToCloudinaryAPIMethod} from '../api/client';
 import {useParams} from "react-router";
+import {useHistory} from "react-router-dom";
 
 
 function Profile({onSubmit, user, setUser}) {
@@ -11,6 +12,13 @@ function Profile({onSubmit, user, setUser}) {
             setUser(user[0]);
         })
     }, []);
+
+    const history = useHistory();
+
+    const routeChange = () => {
+        let path = "/loginPage";
+        history.push(path);
+      }
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -58,6 +66,14 @@ function Profile({onSubmit, user, setUser}) {
         setUser(updatedUser);
     }
 
+    const handleLogout = (event) => {
+        logoutAPIMethod().then(() => {
+            console.log("logged out successfully");
+        });
+        routeChange();
+        
+    }
+
     return (
         <div>
             <input type="checkbox" id="modal"/>
@@ -89,7 +105,7 @@ function Profile({onSubmit, user, setUser}) {
                         </select>
                         <div className="profileBottom">
                             <input type="submit" className="savebtn"/>
-                            <button type="button" className="logoutbtn">Logout</button>
+                            <button type="button" className="logoutbtn" onClick={handleLogout}>Logout</button>
                         </div>
                     </div>
                 </form>

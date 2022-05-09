@@ -22,6 +22,5 @@ module.exports.isAgent = wrapAsync(async (req, res, next) => {
         /* throw new ExpressError("Not an authorized agent for this author", 401); */
         throw new Error("Invalid email and/or password");
     }
-    console.log("end of isAgent");
     next();
 });

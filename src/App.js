@@ -68,7 +68,6 @@ function App() {
     updateNoteAPIMethod(updatedNote).then((response) => {
       console.log("Updated note on the server");
     })
-    console.log("GOES THROUGH");
     var newArray = notes.map(note => {
       if (note._id === updatedNote._id) {
         return updatedNote;

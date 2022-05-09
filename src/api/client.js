@@ -74,6 +74,13 @@ export const loginAPIMethod = (user) => {
         /* .then(parseJSON) */;
 }
 
+export const logoutAPIMethod = () => {
+    return fetch(`/api/logout`, {
+        ...defaultHeaders,
+        method: 'POST',
+    }).then(checkStatus);
+}
+
 export const getUserByIdAPIMethod = (userId) => {
     return fetch(`/api/users/${userId}`, {
         ...defaultHeaders,

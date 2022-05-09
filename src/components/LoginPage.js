@@ -28,13 +28,13 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
         const user = {"email": email, "password": password};
         onLogin(user);
         console.log("isLoggedin: " + isLoggedIn);
-        if (loginErrorMessage === null) {
+        /* if (loginErrorMessage === null) {
             routeChange();
-        }
+        } */
     }
 
     const handleRegister = (name, email, password) => {
-        const profileImageUrl = "url";
+        const profileImageUrl = "https://w7.pngwing.com/pngs/867/694/png-transparent-user-profile-default-computer-icons-network-video-recorder-avatar-cartoon-maker-blue-text-logo.png";
         const colorScheme = "light";
         const user = {name, email, password, profileImageUrl, colorScheme};
         onRegister(user);
