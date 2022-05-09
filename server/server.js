@@ -219,13 +219,14 @@ app.post('/api/users', wrapAsync(async function (req,res) {
     }
 }));
 
+//update user info
 app.put('/api/users/:id', wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     User.findByIdAndUpdate(id,
-        {'name': req.body.name, "email": req.body.email, 'colorScheme': req.body.colorScheme, 'profileImageUrl': req.body.profileImageUrl},
+        {'name': req.body.name, 'email': req.body.email, 'password': req.body.password, 'profileImageUrl': req.body.profileImageUrl, 'colorScheme': req.body.colorScheme},
+        console.log("middle of updating user on server"),
         function (error, result) {
-            console.log("in the function");
             if (error) {
                 console.log("ERROR: " + error);
                 res.status(404).send(error.message);
@@ -233,6 +234,7 @@ app.put('/api/users/:id', wrapAsync(async function (req,res) {
                 res.sendStatus(204);
             }
         }, {runValidators: true});
+    console.log("end of the updating user on server");
 }));
 
 app.delete('/api/users/:id', wrapAsync(async function (req,res) {
