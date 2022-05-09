@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './Main.css';
-import {getUserByIdAPIMethod, getUsersAPIMethod} from '../api/client';
+import {getUserByIdAPIMethod, getUsersAPIMethod, uploadImageToCloudinaryAPIMethod} from '../api/client';
 import {useParams} from "react-router";
 
 
@@ -26,6 +26,38 @@ function Profile({onSubmit, user, setUser}) {
         setUser(updatedUser);
     };
 
+    const handleImageSelected = (event) => {
+        console.log("New File Selected");
+        if (event.target.files && event.target.files[0]) {
+
+            // Could also do additional error checking on the file type, if we wanted
+            // to only allow certain types of files.
+            const selectedFile = event.target.files[0];
+            console.dir(selectedFile);
+
+            const formData = new FormData();
+            // TODO: You need to create an "unsigned" upload preset on your Cloudinary account
+            // Then enter the text for that here.
+            const unsignedUploadPreset = 'xf8joxiu';
+            formData.append('file', selectedFile);
+            formData.append('upload_preset', unsignedUploadPreset);
+
+            console.log("Cloudinary upload");
+            uploadImageToCloudinaryAPIMethod(formData).then((response) => {
+                console.log("Upload success");
+                console.dir(response);
+
+                const updatedUser = {...user, "profileImageUrl": response.url};
+                setUser(updatedUser);
+            });
+        }
+    }
+
+    const removeImage = (event) => {
+        const updatedUser = {...user, "profileImageUrl": "https://w7.pngwing.com/pngs/867/694/png-transparent-user-profile-default-computer-icons-network-video-recorder-avatar-cartoon-maker-blue-text-logo.png"};
+        setUser(updatedUser);
+    }
+
     return (
         <div>
             <input type="checkbox" id="modal"/>
@@ -39,8 +71,11 @@ function Profile({onSubmit, user, setUser}) {
                         </label>
                         <div className="profileHeader">
                             <img src={user.profileImageUrl}/>
-                            <span>Add New Image</span>
-                            <span>Remove Image</span>
+                            <label class="custom-file-upload">
+                                <input type="file" name="image" accept="image/*" id="cloudinary" onChange={handleImageSelected}/>
+                                Add Image
+                            </label>
+                            <span className='removeImageButton' onClick={removeImage}>Remove Image</span>
                         </div>
                         <label htmlFor="name">Name</label>
                         <input value={user.name} type="text" placeholder="Enter Name" name="name" id="name" onChange={handleChange}/>

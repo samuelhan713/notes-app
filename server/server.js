@@ -44,6 +44,11 @@ const sessionConfig = {
     }
 }
 
+const multer = require('multer');
+// This part is a temporary place to store the uploaded files
+// In actual development we would not store it on the local server
+const upload = multer({dest: 'uploads/'});
+
 app.use(session(sessionConfig));
 
 
@@ -52,6 +57,14 @@ function wrapAsync(fn) {
         fn(req, res, next).catch(e => next(e))
     }
 }
+
+app.post('/authors/:id/file', upload.single('image'), wrapAsync(async function (req, res) {
+    // You can see the file details here – it also gets automatically saved into the uploads folder
+    // Again, this is an example of how this works but you would do something a little different in production.
+    console.log("File uploaded of length: " + req.file.size);
+    console.dir(req.file);
+    res.json("File uploaded successfully");
+}));
 
 //NOTES
 //get all notes
@@ -138,15 +151,11 @@ app.put('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
 
 
 //USERS ---------------
-
-
 app.post('/api/register', wrapAsync(async function (req, res) {
     const {password, email, name, profileImageUrl, colorScheme} = req.body;
     const user = new User({email, password, name, profileImageUrl, colorScheme})
     await user.save();
     req.session.userId = user._id;
-    // Note: this is returning the entire user object to demo, which will include the hashed and salted password.
-    // In practice, you wouldn't typically do this – a success status would suffice, or perhaps just the user id.
     res.json(user);
 }));
 
@@ -214,7 +223,7 @@ app.put('/api/users/:id', wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     User.findByIdAndUpdate(id,
-        {'name': req.body.name, "email": req.body.email, 'colorScheme': req.body.colorScheme},
+        {'name': req.body.name, "email": req.body.email, 'colorScheme': req.body.colorScheme, 'profileImageUrl': req.body.profileImageUrl},
         function (error, result) {
             console.log("in the function");
             if (error) {
