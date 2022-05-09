@@ -4,7 +4,7 @@ import {useState, useEffect} from "react";
 import {getNotesAPIMethod, getUserNotesAPIMethod} from '../api/client';
 import {useParams} from "react-router";
 
-function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, handleSwitch}) {
+function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, handleSwitch, user}) {
     const { width, height } = useWindowDimensions();
     const [filteredData, setFilteredData] = useState([]);
     const userId = useParams();
@@ -17,7 +17,6 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
         })
       }, []); */
       useEffect(() => {
-          console.log("userId: " + userId.userId);
           getNotesAPIMethod().then((notes) => {
               setNotes(notes);
               console.dir(notes);
@@ -37,13 +36,11 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
         setActive(tempFilteredData[0] !== undefined ? tempFilteredData[0]._id : null);
     }
 
-
-
     return (
         <div className={`sidebar ${sidebarActive ? "activeComponent" : "false"}`}>
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
             <div className="sidebar-header">
-                <label htmlFor="modal"><img src="https://yt3.ggpht.com/IpUd8bbQ8AFVis-r0ypfvHvB1t8KTJWLOsbBxWbYNH24e_WIwYNwURqa009GWBy56zCrn52dqAc=s900-c-k-c0x00ffffff-no-rj"/></label>
+                <label htmlFor="modal"><img src={user.profileImageUrl}/></label>
                 <div>My Notes</div>
                 <span className="material-icons" id="note_add" onClick={() => {onAddNote(); document.getElementById("searchText").value = ""; setFilteredData([])}}>note_add</span>
             </div>

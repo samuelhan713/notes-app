@@ -170,7 +170,9 @@ app.post('/api/logout', wrapAsync(async function (req, res) {
 
 //get all users
 app.get('/api/users', async function (req, res) {
-    const users = await User.find({});
+    const users = await User.find({"_id": req.session.userId});
+    console.log("user in sever.js: ");
+    console.dir(users);
     res.json(users);
 })
 
@@ -214,6 +216,7 @@ app.put('/api/users/:id', wrapAsync(async function (req,res) {
     User.findByIdAndUpdate(id,
         {'name': req.body.name, "email": req.body.email, 'colorScheme': req.body.colorScheme},
         function (error, result) {
+            console.log("in the function");
             if (error) {
                 console.log("ERROR: " + error);
                 res.status(404).send(error.message);

@@ -5,7 +5,7 @@ import {useParams} from "react-router";
 import { createUserAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod, getUsersAPIMethod } from '../api/client';
 
 
-function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorMessage, loginErrorMessage, setLoginErrorMessage}) {
+function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorMessage, loginErrorMessage, setLoginErrorMessage, isLoggedIn}) {
 
     /* let {noteId} = useParams(); */
     const [display, setDisplay] = useState(false);
@@ -17,7 +17,6 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
     const [users, setUsers] = useState([]);
     /* const [authorized, setAuthorized] = useState(true); */
     /* const [note, setNote] = useState(null); */
-    const test = true;
     let history = useHistory();
     const routeChange = () => {
         let path = '/notes';
@@ -25,10 +24,11 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
     }
 
     const handleLogin = (email, password) => {
-        const user = {"_id": "", "name": "", "password": password, "email": email, "profileImageUrl": "", "colorScheme": "light"};
-        console.log("login error message");
+        /* const user = {"_id": "", "name": "", "password": password, "email": email, "profileImageUrl": "", "colorScheme": "light"}; */
+        const user = {"email": email, "password": password};
         onLogin(user);
-        if (test) {
+        console.log("isLoggedin: " + isLoggedIn);
+        if (loginErrorMessage === null) {
             routeChange();
         }
     }

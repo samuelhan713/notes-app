@@ -43,11 +43,11 @@ export const getNoteByIdAPIMethod = (noteId) => {
         .then(parseJSON);
 }
 
-export const getUserNotesAPIMethod = (userId) => {
+/* export const getUserNotesAPIMethod = (userId) => {
     return fetch(`/api/notes/${userId}`, {
         ...defaultHeaders,
     }).then(checkStatus).then(parseJSON);
-}
+} */
 
 
 //USERS
@@ -69,7 +69,7 @@ export const loginAPIMethod = (user) => {
     return fetch(`/api/login`, {
         ...defaultHeaders,
         method: 'POST',
-        body: JSON.stringify(user)
+        body: JSON.stringify(user),
     }).then(checkStatus)
         /* .then(parseJSON) */;
 }
@@ -91,6 +91,8 @@ export const createUserAPIMethod = (user) => {
 }
 
 export const updateUserAPIMethod = (user) => {
+    console.log("user in updatedUserAPIMethod: ");
+    console.dir(user);
     return fetch(`/api/users/${user._id}`, {
         ...defaultHeaders,
         method: 'PUT', 

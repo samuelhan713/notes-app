@@ -1,30 +1,19 @@
 import { useEffect, useState } from 'react';
 import './Main.css';
-import {getUserByIdAPIMethod} from '../api/client';
+import {getUserByIdAPIMethod, getUsersAPIMethod} from '../api/client';
 import {useParams} from "react-router";
 
 
 function Profile({onSubmit, user, setUser}) {
-    /* const [user, setUser] = useState(user || {}); */
-    /* let {userId} = useParams();
-    console.log("user:");
-    console.dir(user); */
-
     useEffect(() => {
-        /* getUserByIdAPIMethod("625db9a7c12ffa9604bd0e3f").then((user) => {
-            setUser(user);
-        }) */
-        console.log("props.user:");
-        console.dir(user);
-        getUserByIdAPIMethod(user._id).then((user) => {
-            setUser(user);
-        }).catch(err => {
-            console.dir(user);
-            console.log("no user");
+        getUsersAPIMethod().then((user) => {
+            console.log("user set in profile.js");
+            setUser(user[0]);
         })
     }, []);
 
     const handleSubmit = (event) => {
+        event.preventDefault()
         onSubmit(user);
     }
 
@@ -49,7 +38,7 @@ function Profile({onSubmit, user, setUser}) {
                             <span className="material-icons" id="closeIcon">close</span>
                         </label>
                         <div className="profileHeader">
-                            <img src="https://yt3.ggpht.com/IpUd8bbQ8AFVis-r0ypfvHvB1t8KTJWLOsbBxWbYNH24e_WIwYNwURqa009GWBy56zCrn52dqAc=s900-c-k-c0x00ffffff-no-rj"/>
+                            <img src={user.profileImageUrl}/>
                             <span>Add New Image</span>
                             <span>Remove Image</span>
                         </div>

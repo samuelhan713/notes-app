@@ -4,7 +4,7 @@ import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 import LoginPage from './components/LoginPage';
 import React, {useState, useEffect, Fragment} from "react";
-import {createUserAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod, getUserNotesAPIMethod, loginAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
+import {createUserAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod, getUserNotesAPIMethod, getUsersAPIMethod, loginAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
 import {Route, Redirect, Switch, BrowserRouter, useHistory} from 'react-router-dom';
 import {useParams} from "react-router";
 
@@ -19,6 +19,7 @@ function App() {
   const [textAreaActive, setTextAreaActive] = useState(true);
   const [registerErrorMessage, setRegisterErrorMessage] = useState(null);
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
+  let isLoggedIn = false;
 
   const [user, setUser] = useState({});
   const history = useHistory();
@@ -83,10 +84,13 @@ function App() {
     setTextAreaActive(!textAreaActive);
   }
 
-  const handleSubmit = (user) => {
-    updateUserAPIMethod(user, (response) => {
+  const handleSubmit = (updatedUser) => {
+    console.log("updating user on the server...");
+    updateUserAPIMethod(updatedUser).then((response) => {
         console.log("Updated the user on the server");
         console.dir(response);
+    }).catch(err => {
+      console.log("yeah there's an error: " + err);
     });
   }
 
@@ -109,14 +113,20 @@ function App() {
 
 
   const onLogin = (user) => {
-    const loggedIn = true;
     setLoginErrorMessage(null);
-    loginAPIMethod(user, (response) => {console.dir(response);}).catch(err => {
+    /* loginAPIMethod(user, (response) => {console.dir(response._id);}).catch(err => {
       setLoginErrorMessage("Error: Invalid email and/or password");
+      isLoggedIn = false;
+      return;
+    }); */
+    loginAPIMethod(user).then((res) => console.log("loginAPI Method call: " + res)).catch(err => {
+      setLoginErrorMessage("Error: Invalid email and/or password");
+      isLoggedIn = false;
+      return;
     });
-    console.log("user:");
-    console.dir(user);
     setUser(user);
+    console.log("login success!");
+    isLoggedIn = true;
   
     //redirect to notes page (not working?)
     /* routeChange(); */
@@ -152,7 +162,6 @@ function App() {
         fetchData();
     }, [noteId]); */
     sort();
-
   return (
     <div className='App'>
       <BrowserRouter>
@@ -163,7 +172,8 @@ function App() {
                                                     registerErrorMessage={registerErrorMessage}
                                                     setRegisterErrorMessage={setRegisterErrorMessage}
                                                     loginErrorMessage={loginErrorMessage}
-                                                    setLoginErrorMessage={setLoginErrorMessage}/>}/>
+                                                    setLoginErrorMessage={setLoginErrorMessage}
+                                                    isLoggedIn={isLoggedIn}/>}/>
           <Route path='/notes' render={ () => <Fragment>
                                             <SideBar 
                                               notes={notes} 
@@ -172,7 +182,8 @@ function App() {
                                               active={active} 
                                               setActive={setActive} 
                                               sidebarActive={sidebarActive} 
-                                              handleSwitch={handleSwitch}/>
+                                              handleSwitch={handleSwitch}
+                                              user={user}/>
                                             <TextArea 
                                               handleNoteDelete={handleDelete} 
                                               activeNote={getActive()} 
