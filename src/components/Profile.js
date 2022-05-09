@@ -4,15 +4,19 @@ import {getUserByIdAPIMethod} from '../api/client';
 import {useParams} from "react-router";
 
 
-function Profile(props) {
-    const [user, setUser] = useState(props.user || {});
-    let {userId} = useParams();
+function Profile({onSubmit, user, setUser}) {
+    /* const [user, setUser] = useState(user || {}); */
+    /* let {userId} = useParams();
+    console.log("user:");
+    console.dir(user); */
 
     useEffect(() => {
         /* getUserByIdAPIMethod("625db9a7c12ffa9604bd0e3f").then((user) => {
             setUser(user);
         }) */
-        getUserByIdAPIMethod(userId).then((user) => {
+        console.log("props.user:");
+        console.dir(user);
+        getUserByIdAPIMethod(user._id).then((user) => {
             setUser(user);
         }).catch(err => {
             console.log("no user");
@@ -20,7 +24,7 @@ function Profile(props) {
     }, []);
 
     const handleSubmit = (event) => {
-        props.onSubmit(user);
+        onSubmit(user);
     }
 
     const handleChange = (event) => {

@@ -18,6 +18,7 @@ function App() {
   const [textAreaActive, setTextAreaActive] = useState(true);
   const [registerErrorMessage, setRegisterErrorMessage] = useState(null);
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
+  const [user, setUser] = useState({});
   const history = useHistory();
 
   const routeChange = () => {
@@ -111,6 +112,10 @@ function App() {
       setLoginErrorMessage("Error: Invalid email and/or password");
       return;
     });
+    console.log("user:");
+    console.dir(user);
+    setUser(user);
+  
     //redirect to notes page (not working?)
     /* routeChange(); */
 
@@ -123,6 +128,9 @@ function App() {
     })
   }, []);
   sort();
+
+  console.log("user middle code:");
+  console.dir(user);
 
   return (
     <div className='App'>
@@ -152,7 +160,7 @@ function App() {
                                               handleSwitch={handleSwitch} 
                                               notes={notes}
                                               setNotes={setNotes}/>
-                                            <Profile onSubmit={handleSubmit}/>
+                                            <Profile onSubmit={handleSubmit} user={user} setUser={setUser}/>
                                         </Fragment>}/>
           <Route exact path='/' render={() => {
             <Redirect to='/loginPage'/>

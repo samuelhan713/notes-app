@@ -27,6 +27,7 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
     }
 
 
+
     return (
         <div className={`sidebar ${sidebarActive ? "activeComponent" : "false"}`}>
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>

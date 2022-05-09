@@ -56,7 +56,7 @@ function wrapAsync(fn) {
 //NOTES
 //get all notes
 app.get('/api/notes', isLoggedIn, wrapAsync(async function (req,res) {
-    const notes = await Note.find({});
+    const notes = await Note.find({"agent": req.session.userId});
     res.json(notes);
 }));
 
@@ -116,6 +116,7 @@ app.put('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     Note.findByIdAndUpdate(id,
         {'text': req.body.text, 'lastUpdatedDate': req.body.lastUpdatedDate, 'noteTags': req.body.noteTags},
+        console.log("middle of updating note on server"),
         function (error, result) {
             if (error) {
                 console.log("ERROR: " + error);
@@ -124,6 +125,7 @@ app.put('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
                 res.sendStatus(204);
             }
         }, {runValidators: true});
+    console.log("end of the updating note on server");
 }));
 
 
