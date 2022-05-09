@@ -306,7 +306,7 @@ input[type="file"] {
 }
 
 select[name="colorScheme"] {
-  width: 98%;
+  width: 100%;
   height: 25px;
 }
 

@@ -19,7 +19,7 @@ function App() {
   const [textAreaActive, setTextAreaActive] = useState(true);
   const [registerErrorMessage, setRegisterErrorMessage] = useState(null);
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
-  let isLoggedIn = false;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [user, setUser] = useState({});
   const history = useHistory();
@@ -110,7 +110,6 @@ function App() {
     });
   }
 
-
   const onLogin = (user) => {
     setLoginErrorMessage(null);
     /* loginAPIMethod(user, (response) => {console.dir(response._id);}).catch(err => {
@@ -118,49 +117,19 @@ function App() {
       isLoggedIn = false;
       return;
     }); */
-    loginAPIMethod(user).then((res) => console.log("loginAPI Method call: " + res)).catch(err => {
+    loginAPIMethod(user).then(() => setIsLoggedIn(true)).catch(err => {
       setLoginErrorMessage("Error: Invalid email and/or password");
-      isLoggedIn = false;
-      return;
+      setIsLoggedIn(false);
     });
     setUser(user);
     console.log("login success!");
-    isLoggedIn = true;
   
     //redirect to notes page (not working?)
     /* routeChange(); */
 
   }
+  sort();
 
-  
-  /* useEffect(() => {
-    getNotesAPIMethod().then((notes) => {
-      setNotes(notes.reverse());
-    })
-  }, []); */
-  /* useEffect(() => {
-    getUserNotesAPIMethod(uId).then((notes) => {
-      setNotes(notes.reverse());
-    })
-  }, []);
-  sort(); */
-  /* useEffect(() => {
-        // Note: need to place this in an async function to be able to catch the error
-        function fetchData() {
-            getNoteByIdAPIMethod(noteId).then((theNote) => {
-                setNote(theNote);
-                console.dir(theNote);
-            }).catch((err) => {
-                console.error('Error retrieving note data: ' + err);
-                setAuthorized(false);
-                // Could set state to show an error message to the user
-                // Alternatively could redirect to an error page, such as with:
-                // history.push('/error');
-            });
-        };
-        fetchData();
-    }, [noteId]); */
-    sort();
   return (
     <div className='App'>
       <BrowserRouter>
@@ -172,7 +141,8 @@ function App() {
                                                     setRegisterErrorMessage={setRegisterErrorMessage}
                                                     loginErrorMessage={loginErrorMessage}
                                                     setLoginErrorMessage={setLoginErrorMessage}
-                                                    isLoggedIn={isLoggedIn}/>}/>
+                                                    isLoggedIn={isLoggedIn}
+                                                    setIsLoggedIn={setIsLoggedIn}/>}/>
           <Route path='/notes' render={ () => <Fragment>
                                             <SideBar 
                                               notes={notes} 
@@ -191,7 +161,12 @@ function App() {
                                               handleSwitch={handleSwitch} 
                                               notes={notes}
                                               setNotes={setNotes}/>
-                                            <Profile onSubmit={handleSubmit} user={user} setUser={setUser}/>
+                                            <Profile 
+                                              onSubmit={handleSubmit}
+                                              user={user}
+                                              setUser={setUser}
+                                              isLoggedIn={isLoggedIn}
+                                              setIsLoggedIn={setIsLoggedIn}/>
                                         </Fragment>}/>
 
           <Route exact path='/' render={() => {

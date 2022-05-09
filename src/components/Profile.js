@@ -5,7 +5,7 @@ import {useParams} from "react-router";
 import {useHistory} from "react-router-dom";
 
 
-function Profile({onSubmit, user, setUser}) {
+function Profile({onSubmit, user, setUser, isLoggedIn, setIsLoggedIn}) {
     useEffect(() => {
         getUsersAPIMethod().then((user) => {
             console.log("user set in profile.js");
@@ -67,6 +67,7 @@ function Profile({onSubmit, user, setUser}) {
     }
 
     const handleLogout = (event) => {
+        setIsLoggedIn(false);
         logoutAPIMethod().then(() => {
             console.log("logged out successfully");
         });

@@ -114,7 +114,7 @@ app.post('/api/notes', isAgent, wrapAsync(async function(req, res) {
 }));
 
 //delete a note
-app.delete('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
+app.delete('/api/notes/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
     const id = req.params.id;
     Note.findByIdAndDelete(id,
         null,

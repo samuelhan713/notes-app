@@ -5,7 +5,7 @@ import {useParams} from "react-router";
 import { createUserAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod, getUsersAPIMethod } from '../api/client';
 
 
-function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorMessage, loginErrorMessage, setLoginErrorMessage, isLoggedIn}) {
+function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorMessage, loginErrorMessage, setLoginErrorMessage, isLoggedIn, setIsLoggedIn}) {
 
     /* let {noteId} = useParams(); */
     const [display, setDisplay] = useState(false);
@@ -27,10 +27,6 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
         /* const user = {"_id": "", "name": "", "password": password, "email": email, "profileImageUrl": "", "colorScheme": "light"}; */
         const user = {"email": email, "password": password};
         onLogin(user);
-        console.log("isLoggedin: " + isLoggedIn);
-        /* if (loginErrorMessage === null) {
-            routeChange();
-        } */
     }
 
     const handleRegister = (name, email, password) => {
@@ -42,11 +38,16 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
 
 
     useEffect(() => {
+        if (isLoggedIn) {
+            routeChange();
+        } else {
+            console.log("user is NOT logged in in profile!");
+        }
         getUsersAPIMethod().then((users) => {
             setUsers(users);
             console.log("getting all users");
         })
-    }, []);
+    }, [isLoggedIn]);
 
     return (
         <div className='login-page'>
