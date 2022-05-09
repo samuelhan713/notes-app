@@ -68,19 +68,19 @@ app.post('/authors/:id/file', upload.single('image'), wrapAsync(async function (
 
 //NOTES
 //get all notes
-app.get('/api/notes', isLoggedIn, wrapAsync(async function (req,res) {
+app.get('/api/notes', isLoggedIn, isAgent, wrapAsync(async function (req,res) {
     const notes = await Note.find({"agent": req.session.userId});
     res.json(notes);
 }));
 
-app.get('/api/notes/:userId', isLoggedIn, wrapAsync(async function (req, res) {
+app.get('/api/notes/:userId', isLoggedIn, isAgent, wrapAsync(async function (req, res) {
     let userId = req.params.userId;
     const notes = await Note.find({agent: userId});
     res.json(notes);
 }))
 
 //get note with specific ID
-app.get('/api/notes/:id', isAgent, wrapAsync(async function (req,res, next) {
+app.get('/api/notes/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res, next) {
     let id = req.params.id;
     if (mongoose.isValidObjectId(id)) {
         const note = await Note.findById(id);
@@ -96,7 +96,7 @@ app.get('/api/notes/:id', isAgent, wrapAsync(async function (req,res, next) {
 }));
 
 //create a new note
-app.post('/api/notes', isAgent, wrapAsync(async function(req, res) { 
+app.post('/api/notes', isAgent, isLoggedIn, wrapAsync(async function(req, res) { 
     console.log("Posted with body: " + JSON.stringify(req.body));
 
     try {
@@ -130,7 +130,7 @@ app.delete('/api/notes/:id', isAgent, isLoggedIn, wrapAsync(async function (req,
 }));
 
 //update a note
-app.put('/api/notes/:id', isAgent, wrapAsync(async function (req,res) {
+app.put('/api/notes/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     Note.findByIdAndUpdate(id,
@@ -200,7 +200,8 @@ app.get('/api/users/:id', async function (req,res) {
     res.send("No user with id: " + id);
 });
 
-app.post('/api/users', wrapAsync(async function (req,res) {
+//create new user
+app.post('/api/users', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
     console.log("Posted with body: " + JSON.stringify(req.body));
 
     try {
@@ -220,7 +221,7 @@ app.post('/api/users', wrapAsync(async function (req,res) {
 }));
 
 //update user info
-app.put('/api/users/:id', wrapAsync(async function (req,res) {
+app.put('/api/users/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     User.findByIdAndUpdate(id,
@@ -237,7 +238,8 @@ app.put('/api/users/:id', wrapAsync(async function (req,res) {
     console.log("end of the updating user on server");
 }));
 
-app.delete('/api/users/:id', wrapAsync(async function (req,res) {
+//delete a user
+app.delete('/api/users/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
     const id = req.params.id;
     User.findByIdAndDelete(id,
         null,

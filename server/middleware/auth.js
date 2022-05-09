@@ -18,7 +18,7 @@ module.exports.isLoggedIn = (req, res, next) => {
 module.exports.isAgent = wrapAsync(async (req, res, next) => {
     const id = req.params.id;
     const note = await Note.findById(id);
-    if (Note.agent && !Note.agent.equals(req.session.noteId)) {
+    if (note.agent && !note.agent.equals(req.session.noteId)) {
         /* throw new ExpressError("Not an authorized agent for this author", 401); */
         throw new Error("Invalid email and/or password");
     }
