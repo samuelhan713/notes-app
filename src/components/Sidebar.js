@@ -18,7 +18,7 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
       }, []); */
       useEffect(() => {
           console.log("userId: " + userId.userId);
-          getUserNotesAPIMethod(userId.userId).then((notes) => {
+          getNotesAPIMethod().then((notes) => {
               setNotes(notes);
               console.dir(notes);
           })

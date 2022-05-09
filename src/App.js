@@ -19,13 +19,8 @@ function App() {
   const [textAreaActive, setTextAreaActive] = useState(true);
   const [registerErrorMessage, setRegisterErrorMessage] = useState(null);
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
-<<<<<<< HEAD
 
-  /* const [userId, setUserId] = useState(''); */
-  let uId = '';
-=======
   const [user, setUser] = useState({});
->>>>>>> temp
   const history = useHistory();
 
   const routeChange = () => {
@@ -119,20 +114,11 @@ function App() {
     loginAPIMethod(user, (response) => {console.dir(response);}).catch(err => {
       setLoginErrorMessage("Error: Invalid email and/or password");
     });
-<<<<<<< HEAD
-
-    console.dir(user);
-    /* setUserId(user._id); */
-    uId = user._id;
-    /* console.log("user's ID: " + user._id); */
-    //redirect to notes page (not working)
-=======
     console.log("user:");
     console.dir(user);
     setUser(user);
   
     //redirect to notes page (not working?)
->>>>>>> temp
     /* routeChange(); */
 
   }
@@ -165,9 +151,7 @@ function App() {
         };
         fetchData();
     }, [noteId]); */
-
-  console.log("user middle code:");
-  console.dir(user);
+    sort();
 
   return (
     <div className='App'>
@@ -180,27 +164,6 @@ function App() {
                                                     setRegisterErrorMessage={setRegisterErrorMessage}
                                                     loginErrorMessage={loginErrorMessage}
                                                     setLoginErrorMessage={setLoginErrorMessage}/>}/>
-<<<<<<< HEAD
-          <Route path='/notes/:userId' render={ () => <Fragment>
-                                                <SideBar 
-                                                  notes={notes} 
-                                                  setNotes={setNotes} 
-                                                  onAddNote={onAddNote}
-                                                  active={active} 
-                                                  setActive={setActive} 
-                                                  sidebarActive={sidebarActive} 
-                                                  handleSwitch={handleSwitch}/>
-                                                <TextArea 
-                                                  handleNoteDelete={handleDelete} 
-                                                  activeNote={getActive()} 
-                                                  onEdit={onEdit} 
-                                                  textAreaActive={textAreaActive} 
-                                                  handleSwitch={handleSwitch} 
-                                                  notes={notes}
-                                                  setNotes={setNotes}/>
-                                                <Profile onSubmit={handleSubmit}/>
-                                              </Fragment>}/>
-=======
           <Route path='/notes' render={ () => <Fragment>
                                             <SideBar 
                                               notes={notes} 
@@ -220,7 +183,7 @@ function App() {
                                               setNotes={setNotes}/>
                                             <Profile onSubmit={handleSubmit} user={user} setUser={setUser}/>
                                         </Fragment>}/>
->>>>>>> temp
+
           <Route exact path='/' render={() => {
             <Redirect to='/loginPage'/>
           }}/>
