@@ -7,7 +7,6 @@ import { createUserAPIMethod, getNoteByIdAPIMethod, getNotesAPIMethod, getUserBy
 
 function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorMessage, loginErrorMessage, setLoginErrorMessage, isLoggedIn, setIsLoggedIn}) {
 
-    /* let {noteId} = useParams(); */
     const [display, setDisplay] = useState(false);
     const [registerName, setRegisterName] = useState('');
     const [registerEmail, setRegisterEmail] = useState('');
@@ -15,8 +14,6 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
     const [users, setUsers] = useState([]);
-    /* const [authorized, setAuthorized] = useState(true); */
-    /* const [note, setNote] = useState(null); */
     let history = useHistory();
     const routeChange = () => {
         let path = '/notes';
@@ -24,7 +21,6 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
     }
 
     const handleLogin = (email, password) => {
-        /* const user = {"_id": "", "name": "", "password": password, "email": email, "profileImageUrl": "", "colorScheme": "light"}; */
         const user = {"email": email, "password": password};
         onLogin(user);
     }
@@ -65,7 +61,7 @@ function LoginPage({onRegister, onLogin, registerErrorMessage, setRegisterErrorM
                             <label htmlFor='password'>Password</label>
                             <input id='password' type='text' onChange={e => setLoginPassword(e.target.value)}/>
                             <div style={{color: 'red'}}>{loginErrorMessage}</div>
-                            <button type='button' id='login-button' onClick={() => handleLogin(loginEmail, loginPassword)}/* onClick={routeChange} */>Login</button>
+                            <button type='button' id='login-button' onClick={() => handleLogin(loginEmail, loginPassword)}>Login</button>
                             {/* <Link to={"/notes/" + ""}>link</Link> */}
                             <hr/>
                             <div className='login-form-footer'>

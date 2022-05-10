@@ -68,7 +68,7 @@ app.post('/authors/:id/file', upload.single('image'), wrapAsync(async function (
 
 //NOTES
 //get all notes
-app.get('/api/notes', isLoggedIn, isAgent, wrapAsync(async function (req,res) {
+app.get('/api/notes', isLoggedIn, wrapAsync(async function (req,res) {
     const notes = await Note.find({"agent": req.session.userId});
     res.json(notes);
 }));
@@ -96,7 +96,7 @@ app.get('/api/notes/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res
 }));
 
 //create a new note
-app.post('/api/notes', isAgent, isLoggedIn, wrapAsync(async function(req, res) { 
+app.post('/api/notes', isLoggedIn, wrapAsync(async function(req, res) { 
     console.log("Posted with body: " + JSON.stringify(req.body));
 
     try {
@@ -114,7 +114,7 @@ app.post('/api/notes', isAgent, isLoggedIn, wrapAsync(async function(req, res) {
 }));
 
 //delete a note
-app.delete('/api/notes/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
+app.delete('/api/notes/:id', isLoggedIn, wrapAsync(async function (req,res) {
     const id = req.params.id;
     Note.findByIdAndDelete(id,
         null,
@@ -130,7 +130,7 @@ app.delete('/api/notes/:id', isAgent, isLoggedIn, wrapAsync(async function (req,
 }));
 
 //update a note
-app.put('/api/notes/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
+app.put('/api/notes/:id', isLoggedIn, wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     Note.findByIdAndUpdate(id,
@@ -221,7 +221,7 @@ app.post('/api/users', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
 }));
 
 //update user info
-app.put('/api/users/:id', isAgent, isLoggedIn, wrapAsync(async function (req,res) {
+app.put('/api/users/:id', isLoggedIn, wrapAsync(async function (req,res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     User.findByIdAndUpdate(id,

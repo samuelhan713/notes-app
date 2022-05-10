@@ -3,10 +3,9 @@ import TextArea from './components/TextArea';
 import SideBar from './components/Sidebar';
 import Profile from './components/Profile';
 import LoginPage from './components/LoginPage';
-import React, {useState, useEffect, Fragment} from "react";
-import {createUserAPIMethod, getNotesAPIMethod, getUserByIdAPIMethod, getUserNotesAPIMethod, getUsersAPIMethod, loginAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
+import React, {useState, Fragment} from "react";
+import {createUserAPIMethod, loginAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
 import {Route, Redirect, Switch, BrowserRouter, useHistory} from 'react-router-dom';
-import {useParams} from "react-router";
 
 
 function App() {
@@ -22,12 +21,6 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [user, setUser] = useState({});
-  const history = useHistory();
-
-  const routeChange = () => {
-    let path = "/notes";
-    history.push(path);
-  }
 
   const onAddNote = async () => {
     const data = await fetch("/api/notes", {
@@ -53,7 +46,9 @@ function App() {
     const data = await fetch(`/api/notes/${noteToDelete._id}`, {
       method: "DELETE"
     }).then(res => res.json());
-    setNotes(notes => notes.filter(notes => notes._id !== data._id));
+    if (notes !== null) {
+      setNotes(notes => notes.filter(notes => notes._id !== data._id));
+    }
     var tempNotes = [...notes.filter(notes => notes._id !== data._id)];
     if (notes.length !== 1) {
       setActive(tempNotes[tempNotes.length-1]._id);
@@ -112,20 +107,12 @@ function App() {
 
   const onLogin = (user) => {
     setLoginErrorMessage(null);
-    /* loginAPIMethod(user, (response) => {console.dir(response._id);}).catch(err => {
-      setLoginErrorMessage("Error: Invalid email and/or password");
-      isLoggedIn = false;
-      return;
-    }); */
     loginAPIMethod(user).then(() => setIsLoggedIn(true)).catch(err => {
       setLoginErrorMessage("Error: Invalid email and/or password");
       setIsLoggedIn(false);
     });
     setUser(user);
     console.log("login success!");
-  
-    //redirect to notes page (not working?)
-    /* routeChange(); */
 
   }
   sort();
@@ -168,10 +155,9 @@ function App() {
                                               isLoggedIn={isLoggedIn}
                                               setIsLoggedIn={setIsLoggedIn}/>
                                         </Fragment>}/>
-
-          <Route exact path='/' render={() => {
+          <Route exact path="/">
             <Redirect to='/loginPage'/>
-          }}/>
+          </Route>
         </Switch>
       </BrowserRouter>
     </div>

@@ -9,7 +9,7 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
         if (notes.length === 0 || activeNote !== null) {
             return
         }
-        updateNoteAPIMethod(activeNote).then((notes) => { //??????????????? do I need
+        updateNoteAPIMethod(activeNote).then((notes) => { 
           setNotes(notes);
           console.dir(notes);
         })
@@ -20,6 +20,12 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
 
 
     const onType = (field, value) => {
+        for (var i = 0; i < notes.length; i++) {
+            if (document.getElementsByClassName('sidebar-note')[i].style.background === "rgb(208, 237, 237)") {
+                document.getElementsByClassName('sidebar-note')[i].style.background = 'none';
+                document.getElementsByClassName('similarNotes')[i].innerHTML = '';
+            }
+        }
         onEdit(
             {
                 ...activeNote,

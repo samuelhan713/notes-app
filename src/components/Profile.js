@@ -88,7 +88,7 @@ function Profile({onSubmit, user, setUser, isLoggedIn, setIsLoggedIn}) {
                         </label>
                         <div className="profileHeader">
                             <img src={user.profileImageUrl}/>
-                            <label class="custom-file-upload">
+                            <label className="custom-file-upload">
                                 <input type="file" name="image" accept="image/*" id="cloudinary" onChange={handleImageSelected}/>
                                 Add Image
                             </label>
