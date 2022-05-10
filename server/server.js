@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 
-var dbURL = process.env.MONGO_URL || 'mongodb+srv://samuelhan:BON28qGBTQL8ZKfK@cluster0.iln76.mongodb.net/test'; // insert your database URL here
+var dbURL = process.env.MONGO_URL || 'mongodb+srv://samuelhan:BON28qGBTQL8ZKfK@cluster0.iln76.mongodb.net/test'; 
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
