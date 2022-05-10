@@ -1,6 +1,5 @@
 const Note = require('../models/note');
 const User = require('../models/user');
-/* const {wrapAsync} = require('../server'); */
 
 function wrapAsync(fn) {
     return function (req, res, next) {

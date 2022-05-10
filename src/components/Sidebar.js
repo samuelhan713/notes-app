@@ -1,8 +1,7 @@
 import './Main.css';
 import useWindowDimensions from '../windowResize';
 import {useState, useEffect} from "react";
-import {getNotesAPIMethod, getUserNotesAPIMethod} from '../api/client';
-import {useParams} from "react-router";
+import {getNotesAPIMethod} from '../api/client';
 import {loadModel, determineRelatednessOfSentences} from '../universalSentenceEncoder';
 
 loadModel();
