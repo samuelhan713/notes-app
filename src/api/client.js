@@ -43,21 +43,6 @@ export const getNoteByIdAPIMethod = (noteId) => {
         .then(parseJSON);
 }
 
-/* export const getUserNotesAPIMethod = (userId) => {
-    return fetch(`/api/notes/${userId}`, {
-        ...defaultHeaders,
-    }).then(checkStatus).then(parseJSON);
-} */
-
-
-//USERS
-/* export const getUsersAPIMethod = () => {
-    return fetch(`/api/users`, {
-        ...defaultHeaders,
-    }).then(checkStatus)
-        .then(parseJSON);
-} */
-
 export const getUsersAPIMethod = () => {
     return fetch(`/api/users`, {
         ...defaultHeaders,
@@ -117,11 +102,8 @@ export const deleteUserByIdAPIMethod = (userId) => {
 
 
 export const uploadImageToCloudinaryAPIMethod = (formData) => {
-    const cloudName = 'samuelhan' // TODO: Write in your own Cloudinary account
+    const cloudName = 'samuelhan';
     return fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
-        // We do NOT want to set the default headers – the formData will automatically set the
-        // headers to tell the server of the data type (which is different than the JSON
-        // standard all the other API calls have been sending
         method: 'POST',
         body: formData,
     }).then(checkStatus)

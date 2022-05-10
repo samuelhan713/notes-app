@@ -5,7 +5,7 @@ import Profile from './components/Profile';
 import LoginPage from './components/LoginPage';
 import React, {useState, Fragment} from "react";
 import {createUserAPIMethod, loginAPIMethod, updateNoteAPIMethod, updateUserAPIMethod} from './api/client';
-import {Route, Redirect, Switch, BrowserRouter, useHistory} from 'react-router-dom';
+import {Route, Redirect, Switch, BrowserRouter} from 'react-router-dom';
 
 
 function App() {
@@ -84,7 +84,7 @@ function App() {
         console.log("Updated the user on the server");
         console.dir(response);
     }).catch(err => {
-      console.log("yeah there's an error: " + err);
+      console.log(err);
     });
   }
 
@@ -99,9 +99,10 @@ function App() {
 
   const onRegister = (user) => {
     setRegisterErrorMessage(null);
-    createUserAPIMethod(user).catch(err => {
+    createUserAPIMethod(user).then(() => setIsLoggedIn(true)).catch(err => {
       console.log("invalid register");
       setRegisterErrorMessage("Invalid email and/or password");
+      setIsLoggedIn(false);
     });
   }
 
@@ -112,8 +113,6 @@ function App() {
       setIsLoggedIn(false);
     });
     setUser(user);
-    console.log("login success!");
-
   }
   sort();
 
@@ -125,11 +124,8 @@ function App() {
                                                     onRegister={onRegister}
                                                     onLogin={onLogin}
                                                     registerErrorMessage={registerErrorMessage}
-                                                    setRegisterErrorMessage={setRegisterErrorMessage}
                                                     loginErrorMessage={loginErrorMessage}
-                                                    setLoginErrorMessage={setLoginErrorMessage}
-                                                    isLoggedIn={isLoggedIn}
-                                                    setIsLoggedIn={setIsLoggedIn}/>}/>
+                                                    isLoggedIn={isLoggedIn}/>}/>
           <Route path='/notes' render={ () => <Fragment>
                                             <SideBar 
                                               notes={notes} 
@@ -152,7 +148,6 @@ function App() {
                                               onSubmit={handleSubmit}
                                               user={user}
                                               setUser={setUser}
-                                              isLoggedIn={isLoggedIn}
                                               setIsLoggedIn={setIsLoggedIn}/>
                                         </Fragment>}/>
           <Route exact path="/">

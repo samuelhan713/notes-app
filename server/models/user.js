@@ -22,7 +22,7 @@ var UserSchema = new Schema(
                 validator: validator.validateEmail,
                 message: props => `${props.value} is not a valid email!`
             },
-        }, //have at least 1 character before an @symbol followed by a domain name
+        }, 
         password: {
             type: String,
             required: true,
@@ -48,11 +48,5 @@ UserSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, 10);
     next();
 })
-
-/* UserSchema
-    .virtual('url')
-    .get(function () {
-        return '/catalog/user/' + this._id;
-    }); */
 
 module.exports = mongoose.model('User', UserSchema);

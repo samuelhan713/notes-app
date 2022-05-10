@@ -27,8 +27,6 @@ const store = MongoStore.create({
     touchAfter: 24 * 60 * 60
 })
 
-/* mongoose.set('useFindAndModify', false); */
-
 // Setup to use the express-session package
 const sessionConfig = {
     store,
@@ -40,13 +38,10 @@ const sessionConfig = {
         httpOnly: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
-        // later you would want to add: 'secure: true' once your website is hosted on HTTPS.
     }
 }
 
 const multer = require('multer');
-// This part is a temporary place to store the uploaded files
-// In actual development we would not store it on the local server
 const upload = multer({dest: 'uploads/'});
 
 app.use(session(sessionConfig));
@@ -59,14 +54,12 @@ function wrapAsync(fn) {
 }
 
 app.post('/authors/:id/file', upload.single('image'), wrapAsync(async function (req, res) {
-    // You can see the file details here – it also gets automatically saved into the uploads folder
-    // Again, this is an example of how this works but you would do something a little different in production.
     console.log("File uploaded of length: " + req.file.size);
     console.dir(req.file);
     res.json("File uploaded successfully");
 }));
 
-//NOTES
+//NOTES ---------------------
 //get all notes
 app.get('/api/notes', isLoggedIn, wrapAsync(async function (req,res) {
     const notes = await Note.find({"agent": req.session.userId});
@@ -103,7 +96,7 @@ app.post('/api/notes', isLoggedIn, wrapAsync(async function(req, res) {
         const newNote = new Note({
             text: req.body.text,
             lastUpdatedDate: req.body.lastUpdatedDate,
-            agent: req.session.userId, //??????
+            agent: req.session.userId,
         })
         await newNote.save();
         res.json(newNote);
@@ -167,7 +160,6 @@ app.post('/api/login', wrapAsync(async function (req, res) {
         req.session.userId = user._id;
         res.sendStatus(204);
     } else {
-        console.log('You shall not pass');
         res.sendStatus(401);
     }
 }));
@@ -256,15 +248,11 @@ app.delete('/api/users/:id', isAgent, isLoggedIn, wrapAsync(async function (req,
 
 app.use((err, req, res, next) => {
     console.log("Error handling called " + err);
-    // If want to print out the error stack, uncomment below
-    // console.error(err.stack)
-    // Updating the statusMessage with our custom error message (otherwise it will have a default for the status code).
     res.statusMessage = err.message;
 
     if (err.name === 'ValidationError') {
         res.status(400).end();
     } else {
-        // We could further interpret the errors to send a specific status based more error types.
         res.status(500).end();
     }
 })

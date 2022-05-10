@@ -18,11 +18,10 @@ function TextArea({handleNoteDelete, activeNote, onEdit, textAreaActive, handleS
     const[tags, setTags] = useState(activeNote !== undefined ? activeNote.noteTags : []);
     const d = new Date();
 
-
     const onType = (field, value) => {
         for (var i = 0; i < notes.length; i++) {
             if (document.getElementsByClassName('sidebar-note')[i].style.background === "rgb(208, 237, 237)") {
-                document.getElementsByClassName('sidebar-note')[i].style.background = 'none';
+                document.getElementsByClassName('sidebar-note')[i].removeAttribute('style');
                 document.getElementsByClassName('similarNotes')[i].innerHTML = '';
             }
         }

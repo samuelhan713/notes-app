@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import './Main.css';
-import {getUserByIdAPIMethod, getUsersAPIMethod, logoutAPIMethod, uploadImageToCloudinaryAPIMethod} from '../api/client';
-import {useParams} from "react-router";
+import {getUsersAPIMethod, logoutAPIMethod, uploadImageToCloudinaryAPIMethod} from '../api/client';
 import {useHistory} from "react-router-dom";
 
 
-function Profile({onSubmit, user, setUser, isLoggedIn, setIsLoggedIn}) {
+function Profile({onSubmit, user, setUser, setIsLoggedIn}) {
     useEffect(() => {
         getUsersAPIMethod().then((user) => {
             console.log("user set in profile.js");
@@ -37,15 +36,11 @@ function Profile({onSubmit, user, setUser, isLoggedIn, setIsLoggedIn}) {
     const handleImageSelected = (event) => {
         console.log("New File Selected");
         if (event.target.files && event.target.files[0]) {
-
-            // Could also do additional error checking on the file type, if we wanted
-            // to only allow certain types of files.
             const selectedFile = event.target.files[0];
             console.dir(selectedFile);
 
             const formData = new FormData();
-            // TODO: You need to create an "unsigned" upload preset on your Cloudinary account
-            // Then enter the text for that here.
+
             const unsignedUploadPreset = 'xf8joxiu';
             formData.append('file', selectedFile);
             formData.append('upload_preset', unsignedUploadPreset);
@@ -62,7 +57,7 @@ function Profile({onSubmit, user, setUser, isLoggedIn, setIsLoggedIn}) {
     }
 
     const removeImage = (event) => {
-        const updatedUser = {...user, "profileImageUrl": "https://w7.pngwing.com/pngs/867/694/png-transparent-user-profile-default-computer-icons-network-video-recorder-avatar-cartoon-maker-blue-text-logo.png"};
+        const updatedUser = {...user, "profileImageUrl": "https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png"};
         setUser(updatedUser);
     }
 

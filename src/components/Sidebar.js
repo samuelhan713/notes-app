@@ -47,26 +47,17 @@ function Sidebar({notes, setNotes, onAddNote, active, setActive, sidebarActive, 
         var array = [];
         var allNotesText = [];
         notes.forEach((x) => x.text !== "" && allNotesText.push(x.text)); //doesn't include empty notes
-        console.log("allnotes: " + allNotesText);
         
         const n = allNotesText.indexOf(comparedNote.text);
 
         determineRelatednessOfSentences(allNotesText, n).then((arr) => {
             array = [...arr];
-            console.log(array);
-            array.map((x) => {
-                x.score >= 0.5 && console.log(x.score); //this prints all of the notes that have a similarity score > 0.5
-            });
-
             for (var i = 0; i < allNotesText.length; i++) {
                 if (comparedNote.text !== allNotesText[i] && array[i].score >= 0.5) {
-                    console.log(document.getElementsByClassName('sidebar-note')[i]);
                     document.getElementsByClassName('sidebar-note')[i].style.background = 'rgb(208, 237, 237)';
                     document.getElementsByClassName('similarNotes')[i].innerHTML = 'similar';
                 }
             }
-
-            
         }).catch(err => {
             console.log("empty note");
         });
